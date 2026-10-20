@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Plugin Name: Safe Redirect Masker
  * Plugin URI:  https://github.com/M-Sulton/SafeRedirect-WP-Plugin
@@ -85,38 +85,42 @@ final class SafeRedirectMasker {
     }
 
     public function enqueue_admin_assets( $hook ) {
-        if ( 'toplevel_page_safe-redirect-masker' !== $hook ) {
+        if ( 'toplevel_page_safe-redirect-masker' !== $hook && ( ! isset( $_GET['page'] ) || 'safe-redirect-masker' !== $_GET['page'] ) ) {
             return;
         }
+
+        $css_ver = file_exists( SRM_PATH . 'admin/css/admin-style.css' ) ? filemtime( SRM_PATH . 'admin/css/admin-style.css' ) : SRM_VERSION;
+        $js_ver  = file_exists( SRM_PATH . 'admin/js/admin-script.js' )  ? filemtime( SRM_PATH . 'admin/js/admin-script.js' )  : SRM_VERSION;
 
         wp_enqueue_style(
             'srm-google-fonts',
             'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap',
             array(),
-            SRM_VERSION
+            null
         );
 
         wp_enqueue_style(
             'srm-admin-style',
             SRM_URL . 'admin/css/admin-style.css',
             array(),
-            SRM_VERSION
+            $css_ver
         );
 
         wp_enqueue_script(
             'srm-admin-script',
             SRM_URL . 'admin/js/admin-script.js',
             array(),
-            SRM_VERSION,
+            $js_ver,
             true
         );
 
+        $settings = SRM_DB::get_settings();
         wp_localize_script( 'srm-admin-script', 'srm_data', array(
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'nonce'    => wp_create_nonce( 'srm_admin_nonce' ),
             'base_url' => home_url( '/' ),
             'site_url' => home_url( '/' ),
-            'prefix'   => SRM_DB::get_settings()['url_prefix'],
+            'prefix'   => $settings['url_prefix'],
             'version'  => SRM_VERSION,
         ) );
     }
