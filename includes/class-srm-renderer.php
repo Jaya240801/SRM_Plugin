@@ -32,6 +32,40 @@ class SRM_Renderer {
         $slug      = esc_html( $link['slug'] );
         $dest_js   = json_encode( $link['real_url'] );
 
+        // Prepare article paragraphs for modal in-article context
+        $clean_content = trim( (string) ( $link['article_content'] ?? '' ) );
+        $intro_p       = '';
+        $outro_p       = '';
+
+        if ( ! empty( $clean_content ) ) {
+            if ( preg_match_all( '/<p\b[^>]*>(.*?)<\/p>/is', $clean_content, $matches ) && ! empty( $matches[0] ) ) {
+                $p_tags  = $matches[0];
+                $intro_p = $p_tags[0];
+                if ( count( $p_tags ) > 1 ) {
+                    $outro_p = $p_tags[1];
+                }
+            }
+            if ( empty( $intro_p ) ) {
+                $plain_text = wp_strip_all_tags( $clean_content );
+                $sentences  = preg_split( '/(?<=[.?!])\s+/u', trim( $plain_text ) );
+                if ( ! empty( $sentences ) ) {
+                    $mid     = max( 1, (int) ceil( count( $sentences ) / 2 ) );
+                    $intro_p = '<p>' . esc_html( implode( ' ', array_slice( $sentences, 0, $mid ) ) ) . '</p>';
+                    $outro_slice = array_slice( $sentences, $mid );
+                    if ( ! empty( $outro_slice ) ) {
+                        $outro_p = '<p>' . esc_html( implode( ' ', $outro_slice ) ) . '</p>';
+                    }
+                }
+            }
+        }
+
+        if ( empty( $intro_p ) ) {
+            $intro_p = '<p>' . sprintf( esc_html__( 'Explore key insights and essential guidelines regarding %s while your destination link is being verified.', 'safe-redirect-masker' ), '<strong>' . $title . '</strong>' ) . '</p>';
+        }
+        if ( empty( $outro_p ) ) {
+            $outro_p = '<p>' . esc_html__( 'Thank you for your patience during verification. Your destination link is fully prepared and ready to access below.', 'safe-redirect-masker' ) . '</p>';
+        }
+
         status_header( 200 );
         nocache_headers();
         ?>
@@ -411,12 +445,12 @@ class SRM_Renderer {
       border-color: #f59e0b !important;
       box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25) !important;
     }
-    /* ─── Full Screen Ad Modal ────────────────────────────────────────── */
+    /* ─── Full Screen In-Article Reader Modal ────────────────────────── */
     .srm-ad-modal-overlay {
       position: fixed;
       inset: 0;
       z-index: 999999;
-      background: rgba(15, 23, 42, 0.82);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       display: flex;
@@ -437,14 +471,14 @@ class SRM_Renderer {
       background: #ffffff;
       border-radius: 20px;
       width: 100%;
-      max-width: 650px;
+      max-width: 720px;
       max-height: 90vh;
       overflow-y: auto;
       box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
       display: flex;
       flex-direction: column;
       position: relative;
-      transform: scale(0.92) translateY(15px);
+      transform: scale(0.95) translateY(12px);
       transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .srm-ad-modal-overlay.srm-modal-open .srm-ad-modal-dialog {
@@ -454,7 +488,7 @@ class SRM_Renderer {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 20px;
+      padding: 14px 22px;
       border-bottom: 1px solid var(--border);
       background: #f8fafc;
       border-top-left-radius: 20px;
@@ -485,7 +519,7 @@ class SRM_Renderer {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 7px 14px;
+      padding: 7px 15px;
       background: #f1f5f9;
       color: #334155;
       border: 1px solid #cbd5e1;
@@ -497,45 +531,114 @@ class SRM_Renderer {
       font-family: inherit;
     }
     .srm-ad-modal-close:hover {
-      background: #e2e8f0;
-      color: #0f172a;
-      border-color: #94a3b8;
+      background: #ef4444;
+      color: #ffffff;
+      border-color: #ef4444;
       transform: translateY(-1px);
     }
     .srm-ad-modal-close:active {
       transform: translateY(0);
     }
     .srm-ad-modal-body {
-      padding: 24px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 280px;
+      padding: 24px 24px 16px;
+      display: block;
       overflow-x: hidden;
+      text-align: left;
+    }
+    .srm-modal-article {
+      display: block;
+      width: 100%;
+    }
+    .srm-modal-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--primary);
+      letter-spacing: 0.06em;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .srm-modal-title {
+      font-size: 1.22rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.35;
+      margin-bottom: 12px;
+    }
+    .srm-modal-paragraph {
+      font-size: 0.94rem;
+      line-height: 1.7;
+      color: #334155;
+    }
+    .srm-modal-paragraph p {
+      margin: 0 0 10px;
+      line-height: 1.7;
     }
     .srm-ad-modal-ad-wrap {
       width: 100%;
-      min-width: 280px;
+      margin: 18px 0;
+      padding: 16px 12px;
+      background: #f8fafc;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
       text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      box-sizing: border-box;
       overflow: hidden;
     }
-    .srm-ad-modal-ad-wrap ins.adsbygoogle {
+    .srm-ad-modal-ad-wrap .srm-ad-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #94a3b8;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .srm-ad-modal-slot {
+      width: 100%;
+      min-width: 250px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .srm-ad-modal-slot ins.adsbygoogle {
       display: block !important;
       margin: 0 auto !important;
-      min-width: 250px !important;
-      min-height: 250px !important;
+      text-align: center !important;
     }
     .srm-ad-modal-footer {
-      padding: 12px 20px;
+      padding: 16px 22px;
       background: #f8fafc;
       border-top: 1px solid var(--border);
       text-align: center;
       border-bottom-left-radius: 20px;
       border-bottom-right-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .srm-btn-modal-continue {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      max-width: 360px;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      color: #ffffff;
+      font-weight: 700;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-family: inherit;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+      transition: all 0.2s ease;
+    }
+    .srm-btn-modal-continue:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
     }
     .srm-ad-modal-footer-note {
       font-size: 0.78rem;
@@ -678,23 +781,50 @@ class SRM_Renderer {
 </div>
 
 <?php if ( ! empty( trim( $ad_modal ) ) ) : ?>
-<!-- Full Screen Modal Ad -->
+<!-- Full Screen Modal In-Article Reader Ad -->
 <div id="srm-ad-modal" class="srm-ad-modal-overlay" aria-modal="true" role="dialog" aria-hidden="true">
   <div class="srm-ad-modal-dialog">
     <div class="srm-ad-modal-header">
-      <span class="srm-ad-modal-badge"><?php esc_html_e( 'Advertisement', 'safe-redirect-masker' ); ?></span>
+      <span class="srm-ad-modal-badge"><?php esc_html_e( 'Sponsored Article Preview', 'safe-redirect-masker' ); ?></span>
       <button type="button" class="srm-ad-modal-close" id="srm-modal-close-ad-btn" aria-label="<?php esc_attr_e( 'Close Ad', 'safe-redirect-masker' ); ?>">
         <span><?php esc_html_e( 'Close Ad', 'safe-redirect-masker' ); ?></span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
     </div>
+
     <div class="srm-ad-modal-body">
-      <div class="srm-ad-modal-ad-wrap">
-        <?php echo $ad_modal; ?>
-      </div>
+      <!-- Article Header & Paragraph Above Ad -->
+      <article class="srm-modal-article">
+        <header class="srm-modal-article-header">
+          <span class="srm-modal-tag">📰 <?php esc_html_e( 'Article Highlights', 'safe-redirect-masker' ); ?></span>
+          <h2 class="srm-modal-title"><?php echo $title; ?></h2>
+        </header>
+
+        <div class="srm-modal-paragraph srm-modal-p-intro">
+          <?php echo $intro_p; ?>
+        </div>
+
+        <!-- In-Article Ad Unit (Placed Between Article Paragraphs) -->
+        <div class="srm-ad-modal-ad-wrap">
+          <span class="srm-ad-label"><?php esc_html_e( 'Advertisement', 'safe-redirect-masker' ); ?></span>
+          <div class="srm-ad-modal-slot">
+            <?php echo $ad_modal; ?>
+          </div>
+        </div>
+
+        <!-- Article Paragraph Below Ad -->
+        <div class="srm-modal-paragraph srm-modal-p-outro">
+          <?php echo $outro_p; ?>
+        </div>
+      </article>
     </div>
+
     <div class="srm-ad-modal-footer">
-      <span class="srm-ad-modal-footer-note"><?php esc_html_e( 'Click &quot;Close Ad&quot; to continue to your verified link', 'safe-redirect-masker' ); ?></span>
+      <button type="button" class="srm-btn-modal-continue" id="srm-modal-continue-btn">
+        <span><?php esc_html_e( 'Continue to Destination', 'safe-redirect-masker' ); ?></span>
+        <span>↓</span>
+      </button>
+      <span class="srm-ad-modal-footer-note"><?php esc_html_e( 'Click above or &quot;Close Ad&quot; to scroll to your final destination link', 'safe-redirect-masker' ); ?></span>
     </div>
   </div>
 </div>
@@ -872,6 +1002,14 @@ class SRM_Renderer {
 
   if (closeAdBtn) {
     closeAdBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      closeAdModal();
+    });
+  }
+
+  var continueAdBtn = document.getElementById('srm-modal-continue-btn');
+  if (continueAdBtn) {
+    continueAdBtn.addEventListener('click', function (e) {
       e.preventDefault();
       closeAdModal();
     });
