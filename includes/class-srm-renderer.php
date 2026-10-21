@@ -530,24 +530,20 @@ class SRM_Renderer {
       padding: 24px;
       box-sizing: border-box;
       box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      display: block;
     }
     .srm-ad-modal-ad-wrap {
       width: 100%;
       min-width: 250px;
       margin: 0 auto;
       text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      display: block;
       min-height: 250px;
-      overflow: hidden;
       box-sizing: border-box;
     }
     .srm-ad-modal-ad-wrap ins.adsbygoogle {
       display: block !important;
+      width: 100% !important;
       margin: 0 auto !important;
       min-width: 250px !important;
       min-height: 250px !important;
@@ -756,7 +752,7 @@ class SRM_Renderer {
     <div class="srm-ad-modal-body">
       <div class="srm-ad-modal-card-box">
         <div class="srm-ad-modal-ad-wrap" id="srm-ad-modal-ad-wrap">
-          <?php echo $ad_modal; ?>
+          <!-- Dynamically populated when modal opens so AdSense is never initialized while hidden -->
         </div>
       </div>
     </div>
@@ -769,6 +765,9 @@ class SRM_Renderer {
     </div>
   </div>
 </div>
+<template id="srm-modal-ad-raw">
+  <?php echo $ad_modal; ?>
+</template>
 <?php endif; ?>
 
 <?php echo $ads_foot; ?>
@@ -932,6 +931,72 @@ class SRM_Renderer {
   var adModal          = document.getElementById('srm-ad-modal');
   var closeAdBtn       = document.getElementById('srm-modal-close-ad-btn');
   var modalContinueBtn = document.getElementById('srm-modal-continue-btn');
+  var modalAdActivated = false;
+
+  function activateModalAd() {
+    if (modalAdActivated) return;
+    modalAdActivated = true;
+
+    var rawTpl = document.getElementById('srm-modal-ad-raw');
+    var wrap   = document.getElementById('srm-ad-modal-ad-wrap');
+    if (!rawTpl || !wrap) return;
+
+    var tempDiv = document.createElement('div');
+    tempDiv.innerHTML = rawTpl.innerHTML;
+
+    var isAdSense = tempDiv.querySelector('ins.adsbygoogle') !== null;
+
+    if (isAdSense) {
+      // AdSense unit: extract external script to head if needed, strip inline scripts to avoid duplicate push
+      var scripts = tempDiv.querySelectorAll('script');
+      scripts.forEach(function (s) {
+        if (s.src && s.src.indexOf('adsbygoogle') !== -1 && !document.querySelector('script[src*="adsbygoogle.js"]')) {
+          var newScript = document.createElement('script');
+          newScript.src = s.src;
+          newScript.async = true;
+          if (s.crossOrigin) newScript.crossOrigin = s.crossOrigin;
+          document.head.appendChild(newScript);
+        }
+        s.remove();
+      });
+
+      // Insert clean markup into visible wrap
+      wrap.innerHTML = tempDiv.innerHTML;
+
+      // Push to AdSense for each ins tag
+      var insList = wrap.querySelectorAll('ins.adsbygoogle');
+      insList.forEach(function (ins) {
+        try {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (err) {
+          console.warn('SRM AdSense modal push:', err);
+        }
+      });
+    } else {
+      // Non-AdSense / generic ad code
+      wrap.innerHTML = '';
+      Array.from(tempDiv.childNodes).forEach(function (node) {
+        if (node.tagName === 'SCRIPT') {
+          var sc = document.createElement('script');
+          Array.from(node.attributes).forEach(function (attr) {
+            sc.setAttribute(attr.name, attr.value);
+          });
+          sc.text = node.innerHTML;
+          wrap.appendChild(sc);
+        } else {
+          wrap.appendChild(node.cloneNode(true));
+        }
+      });
+    }
+
+    // Force layout reflow and AdSense responsive recalculation
+    setTimeout(function () {
+      try { window.dispatchEvent(new Event('resize')); } catch (err) {}
+    }, 60);
+    setTimeout(function () {
+      try { window.dispatchEvent(new Event('resize')); } catch (err) {}
+    }, 250);
+  }
 
   function closeAdModal() {
     if (!adModal) return;
@@ -1011,23 +1076,7 @@ class SRM_Renderer {
         adModal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
 
-        // Check if any ins in the modal was not pushed yet (fallback push)
-        var modalIns = adModal.querySelectorAll('ins.adsbygoogle');
-        modalIns.forEach(function (ins) {
-          if (!ins.getAttribute('data-adsbygoogle-status')) {
-            try {
-              (window.adsbygoogle = window.adsbygoogle || []).push({});
-            } catch (err) {}
-          }
-        });
-
-        // Trigger resize events so AdSense re-measures container
-        setTimeout(function () {
-          try { window.dispatchEvent(new Event('resize')); } catch (err) {}
-        }, 50);
-        setTimeout(function () {
-          try { window.dispatchEvent(new Event('resize')); } catch (err) {}
-        }, 200);
+        activateModalAd();
       } else {
         scrollToFinalCard();
       }
