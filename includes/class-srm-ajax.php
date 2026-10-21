@@ -29,6 +29,9 @@ class SRM_AJAX {
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     private static function verify() {
+        if ( ob_get_length() ) {
+            @ob_clean();
+        }
         if ( ! check_ajax_referer( 'srm_admin_nonce', 'nonce', false ) ) {
             wp_send_json_error( array( 'message' => 'Security token expired. Please refresh the page and try again.' ), 403 );
         }
@@ -183,16 +186,40 @@ class SRM_AJAX {
 
     public static function srm_save_settings() {
         self::verify();
-        $prefix = isset( $_POST['url_prefix'] ) ? sanitize_key( wp_unslash( $_POST['url_prefix'] ) ) : 'go';
-        $data   = array(
-            'url_prefix'         => $prefix,
-            'timer'              => isset( $_POST['timer'] )              ? max( 1, intval( $_POST['timer'] ) )                            : 5,
-            'anti_bomb_limit'    => isset( $_POST['anti_bomb_limit'] )    ? max( 1, intval( $_POST['anti_bomb_limit'] ) )                   : 5,
-            'anti_bomb_window'   => isset( $_POST['anti_bomb_window'] )   ? max( 10, intval( $_POST['anti_bomb_window'] ) )                 : 60,
-            'bomb_lockout'       => isset( $_POST['bomb_lockout'] )       ? max( 30, intval( $_POST['bomb_lockout'] ) )                     : 300,
-            'ads_head'           => isset( $_POST['ads_head'] )           ? wp_unslash( $_POST['ads_head'] )                               : '',
-            'ads_foot'           => isset( $_POST['ads_foot'] )           ? wp_unslash( $_POST['ads_foot'] )                               : '',
-        );
+        $data = array();
+
+        if ( isset( $_POST['url_prefix'] ) ) {
+            $raw_prefix = sanitize_key( wp_unslash( $_POST['url_prefix'] ) );
+            $data['url_prefix'] = ! empty( $raw_prefix ) ? $raw_prefix : 'go';
+        }
+        if ( isset( $_POST['timer'] ) ) {
+            $data['timer'] = max( 1, intval( $_POST['timer'] ) );
+        }
+        if ( isset( $_POST['anti_bomb_limit'] ) ) {
+            $data['anti_bomb_limit'] = max( 1, intval( $_POST['anti_bomb_limit'] ) );
+        }
+        if ( isset( $_POST['anti_bomb_window'] ) ) {
+            $data['anti_bomb_window'] = max( 10, intval( $_POST['anti_bomb_window'] ) );
+        }
+        if ( isset( $_POST['bomb_lockout'] ) ) {
+            $data['bomb_lockout'] = max( 30, intval( $_POST['bomb_lockout'] ) );
+        }
+        if ( isset( $_POST['ad_slot_1'] ) ) {
+            $data['ad_slot_1'] = wp_unslash( $_POST['ad_slot_1'] );
+        }
+        if ( isset( $_POST['ad_slot_2'] ) ) {
+            $data['ad_slot_2'] = wp_unslash( $_POST['ad_slot_2'] );
+        }
+        if ( isset( $_POST['ad_slot_3'] ) ) {
+            $data['ad_slot_3'] = wp_unslash( $_POST['ad_slot_3'] );
+        }
+        if ( isset( $_POST['ads_head'] ) ) {
+            $data['ads_head'] = wp_unslash( $_POST['ads_head'] );
+        }
+        if ( isset( $_POST['ads_foot'] ) ) {
+            $data['ads_foot'] = wp_unslash( $_POST['ads_foot'] );
+        }
+
         $updated = SRM_DB::save_settings( $data );
         wp_send_json_success( array(
             'settings' => $updated,

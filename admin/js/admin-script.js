@@ -47,7 +47,8 @@
       .then(function (res) {
         return res.text().then(function (text) {
           try {
-            return JSON.parse(text);
+            var cleanText = text ? text.replace(/^\uFEFF/, '').trim() : '';
+            return JSON.parse(cleanText);
           } catch (e) {
             console.error('Non-JSON response received:', text);
             throw new Error('Server returned unexpected output. Check server logs.');
@@ -131,6 +132,7 @@
 
     if (tab === 'links')    loadLinks();
     if (tab === 'settings') loadSettings();
+    if (tab === 'ads')      loadSettings();
   }
 
   /* ── Stats ─────────────────────────────────────────────────── */
@@ -408,11 +410,11 @@
     }
   }
 
-  function saveSettings() {
-    var form = $('#srm-settings-form');
+  function saveSettings(formSelector, btnSelector) {
+    var form = $(formSelector || '#srm-settings-form');
     if (!form) return;
 
-    var btn = $('#srm-save-settings-btn');
+    var btn = $(btnSelector || '#srm-save-settings-btn');
     if (btn) btn.disabled = true;
 
     var data = {};
@@ -474,10 +476,10 @@
             '<div style="display:flex;align-items:center;gap:10px;">' +
               '<span style="font-size:1.5rem;">' + (isBot ? '🤖' : '👤') + '</span>' +
               '<div>' +
-                '<h4 style="margin:0;font-size:1rem;color:#fff;font-weight:700;">' +
+                '<h4 class="srm-sim-title" style="margin:0;font-size:1rem;font-weight:700;">' +
                   (isBot ? 'Detected as Bot / Search Crawler' : 'Detected as Real Human Visitor') +
                 '</h4>' +
-                '<span style="font-size:.78rem;color:' + (isBot ? '#fca5a5' : '#6ee7b7') + ';">' +
+                '<span style="font-size:.78rem;font-weight:600;color:' + (isBot ? '#dc2626' : '#059669') + ';">' +
                   escHtml(d.matched_rule) +
                 '</span>' +
               '</div>' +
@@ -489,7 +491,7 @@
           '<div class="srm-sim-result-body">' +
             '<div class="srm-sim-metric">' +
               '<span class="srm-sim-metric-lbl">Masked URL Tested</span>' +
-              '<span class="srm-sim-metric-val" style="font-family:var(--srm-font-mono);font-size:.8rem;color:#a5b4fc;">' + escHtml(d.masked_url) + '</span>' +
+              '<span class="srm-sim-metric-val" style="font-family:var(--srm-font-mono);font-size:.8rem;color:var(--srm-primary);">' + escHtml(d.masked_url) + '</span>' +
             '</div>' +
             '<div class="srm-sim-metric">' +
               '<span class="srm-sim-metric-lbl">Target Action</span>' +
@@ -501,7 +503,7 @@
             '</div>' +
             '<div class="srm-sim-metric">' +
               '<span class="srm-sim-metric-lbl">Real Destination URL</span>' +
-              '<a href="' + escHtml(d.real_url) + '" target="_blank" class="srm-sim-metric-val" style="font-size:.8rem;color:#c7d2fe;text-decoration:none;">' + escHtml(d.real_url) + ' ↗</a>' +
+              '<a href="' + escHtml(d.real_url) + '" target="_blank" class="srm-sim-metric-val" style="font-size:.8rem;color:var(--srm-primary);text-decoration:none;">' + escHtml(d.real_url) + ' ↗</a>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -762,7 +764,16 @@
     if (settingsForm) {
       settingsForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        saveSettings();
+        saveSettings('#srm-settings-form', '#srm-save-settings-btn');
+      });
+    }
+
+    // Google AdSense Form
+    var adsForm = $('#srm-ads-form');
+    if (adsForm) {
+      adsForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        saveSettings('#srm-ads-form', '#srm-save-ads-btn');
       });
     }
 

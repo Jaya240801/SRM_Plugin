@@ -118,6 +118,12 @@ $site_domain = wp_parse_url( home_url(), PHP_URL_HOST );
         <span class="srm-tab-count" id="srm-tab-link-count">0</span>
       </button>
 
+      <button type="button" class="srm-tab-item" data-tab="ads">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span><?php _e( 'Google AdSense & Ads', 'safe-redirect-masker' ); ?></span>
+        <span class="srm-tab-tag srm-tab-tag-blue">3 SLOTS</span>
+      </button>
+
       <button type="button" class="srm-tab-item" data-tab="simulator">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m14 12-4-4 4-4"/><path d="M4 12h16"/><path d="M14 20l4-4-4-4"/></svg>
         <span><?php _e( 'Crawler Simulator', 'safe-redirect-masker' ); ?></span>
@@ -252,6 +258,89 @@ $site_domain = wp_parse_url( home_url(), PHP_URL_HOST );
     </div>
 
     <!-- ════════════════════════════════════════════════════════════ -->
+    <!--  PANEL: GOOGLE ADSENSE & ADS (DEDICATED TAB)                 -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <div class="srm-page-panel" data-panel="ads" style="display:none;">
+      <form id="srm-ads-form">
+        <div class="srm-card">
+          <div class="srm-card-header">
+            <div>
+              <h2 class="srm-card-title">💰 <?php _e( 'Google AdSense & Ad Slots (Safelink Page)', 'safe-redirect-masker' ); ?></h2>
+              <p class="srm-card-desc"><?php _e( 'Monetise visitor wait time by displaying up to 3 AdSense ad units directly on safelink countdown pages.', 'safe-redirect-masker' ); ?></p>
+            </div>
+            <div class="srm-card-actions">
+              <button type="submit" class="srm-btn srm-btn-primary" id="srm-save-ads-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                <span><?php _e( 'Save All Ad Settings', 'safe-redirect-masker' ); ?></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="srm-card-body">
+            
+            <!-- Global Script -->
+            <div class="srm-form-group">
+              <label class="srm-label">
+                <span class="srm-badge srm-badge-info" style="font-size:0.7rem;padding:2px 6px;margin-right:6px;"><?php _e( 'Global Script', 'safe-redirect-masker' ); ?></span>
+                <?php _e( 'Header HTML Code (&lt;head&gt; injection)', 'safe-redirect-masker' ); ?>
+              </label>
+              <textarea name="ads_head" class="srm-textarea srm-textarea-code" rows="3" placeholder="<!-- Paste base AdSense script: <script async src=&quot;https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-...&quot; crossorigin=&quot;anonymous&quot;></script> -->"><?php echo esc_textarea( $settings['ads_head'] ?? '' ); ?></textarea>
+              <div class="srm-hint"><?php _e( 'Injected into &lt;head&gt; of safelink pages for real human visitors. Perfect for your base AdSense script or auto-ads.', 'safe-redirect-masker' ); ?></div>
+            </div>
+
+            <!-- 3 Ad Slots Grid -->
+            <div class="srm-ad-slots-grid">
+              
+              <!-- Ad Slot 1 -->
+              <div class="srm-ad-slot-card">
+                <div class="srm-ad-slot-header">
+                  <span class="srm-badge srm-badge-primary">Slot 1</span>
+                  <strong><?php _e( 'Top Banner (Above Article)', 'safe-redirect-masker' ); ?></strong>
+                </div>
+                <textarea name="ad_slot_1" class="srm-textarea srm-textarea-code" rows="6" placeholder="<!-- Paste Ad Unit 1: <ins class=&quot;adsbygoogle&quot; ...></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->"><?php echo esc_textarea( $settings['ad_slot_1'] ?? '' ); ?></textarea>
+                <div class="srm-hint"><?php _e( 'Displayed at the very top of the safelink page, right above the article card.', 'safe-redirect-masker' ); ?></div>
+              </div>
+
+              <!-- Ad Slot 2 -->
+              <div class="srm-ad-slot-card">
+                <div class="srm-ad-slot-header">
+                  <span class="srm-badge srm-badge-primary">Slot 2</span>
+                  <strong><?php _e( 'Middle Banner (Between Article & Countdown)', 'safe-redirect-masker' ); ?></strong>
+                </div>
+                <textarea name="ad_slot_2" class="srm-textarea srm-textarea-code" rows="6" placeholder="<!-- Paste Ad Unit 2: <ins class=&quot;adsbygoogle&quot; ...></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->"><?php echo esc_textarea( $settings['ad_slot_2'] ?? '' ); ?></textarea>
+                <div class="srm-hint"><?php _e( 'Prime visibility position placed between the cloaking article and the countdown timer box.', 'safe-redirect-masker' ); ?></div>
+              </div>
+
+              <!-- Ad Slot 3 -->
+              <div class="srm-ad-slot-card">
+                <div class="srm-ad-slot-header">
+                  <span class="srm-badge srm-badge-primary">Slot 3</span>
+                  <strong><?php _e( 'Bottom Banner (Under Countdown Box)', 'safe-redirect-masker' ); ?></strong>
+                </div>
+                <textarea name="ad_slot_3" class="srm-textarea srm-textarea-code" rows="6" placeholder="<!-- Paste Ad Unit 3: <ins class=&quot;adsbygoogle&quot; ...></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->"><?php echo esc_textarea( $settings['ad_slot_3'] ?? '' ); ?></textarea>
+                <div class="srm-hint"><?php _e( 'Displayed directly underneath the countdown card and continue button.', 'safe-redirect-masker' ); ?></div>
+              </div>
+
+            </div>
+
+            <div class="srm-form-group">
+              <label class="srm-label"><?php _e( 'Footer HTML Code (&lt;/body&gt; injection)', 'safe-redirect-masker' ); ?></label>
+              <textarea name="ads_foot" class="srm-textarea srm-textarea-code" rows="2" placeholder="<!-- Analytics, tracking pixels, or chat widgets -->"><?php echo esc_textarea( $settings['ads_foot'] ?? '' ); ?></textarea>
+            </div>
+
+            <div class="srm-form-actions-bar" style="margin-top:20px;">
+              <button type="submit" class="srm-btn srm-btn-primary" id="srm-save-ads-btn-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                <span><?php _e( 'Save All Ad Settings', 'safe-redirect-masker' ); ?></span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════ -->
     <!--  PANEL 3: SETTINGS PANEL                                    -->
     <!-- ════════════════════════════════════════════════════════════ -->
     <div class="srm-page-panel" data-panel="settings" style="display:none;">
@@ -328,33 +417,26 @@ $site_domain = wp_parse_url( home_url(), PHP_URL_HOST );
             </div>
           </div>
 
-          <!-- AdSense / Ad Injection -->
-          <div class="srm-card srm-settings-card" style="grid-column: 1 / -1;">
-            <div class="srm-card-header">
+          <!-- Callout to AdSense Tab -->
+          <div class="srm-card srm-settings-card srm-callout-card" style="grid-column: 1 / -1;">
+            <div class="srm-card-body" style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:24px;">
               <div>
-                <h3 class="srm-card-title">💰 <?php _e( 'AdSense & Custom Script Injection', 'safe-redirect-masker' ); ?></h3>
-                <p class="srm-card-desc"><?php _e( 'Monetise the countdown wait time by inserting Google AdSense auto-ads, banners, or analytics scripts into safelink cloaking pages.', 'safe-redirect-masker' ); ?></p>
+                <h4 class="srm-callout-title">
+                  <span>💰</span> <?php _e( 'Configure Google AdSense & 3 Ad Slots', 'safe-redirect-masker' ); ?>
+                </h4>
+                <p class="srm-callout-desc"><?php _e( 'Looking for your 3 AdSense slots? Manage Top, Middle, and Bottom Ad units in the dedicated Google AdSense & Ads tab.', 'safe-redirect-masker' ); ?></p>
               </div>
+              <button type="button" class="srm-btn srm-btn-secondary" onclick="document.querySelector('.srm-tab-item[data-tab=\'ads\']').click();">
+                <span><?php _e( 'Open Google AdSense Tab →', 'safe-redirect-masker' ); ?></span>
+              </button>
             </div>
-            <div class="srm-card-body">
-              <div class="srm-form-group">
-                <label class="srm-label"><?php _e( 'Header HTML Code (&lt;head&gt; injection)', 'safe-redirect-masker' ); ?></label>
-                <textarea name="ads_head" class="srm-textarea srm-textarea-code" rows="4" placeholder="<!-- Paste Google AdSense <script async src=...> or meta tags here -->"><?php echo esc_textarea( $settings['ads_head'] ); ?></textarea>
-                <div class="srm-hint"><?php _e( 'Executed only for real human visitors on safelink countdown pages. Never shown to search crawlers.', 'safe-redirect-masker' ); ?></div>
-              </div>
+          </div>
 
-              <div class="srm-form-group">
-                <label class="srm-label"><?php _e( 'Footer HTML Code (&lt;/body&gt; injection)', 'safe-redirect-masker' ); ?></label>
-                <textarea name="ads_foot" class="srm-textarea srm-textarea-code" rows="3" placeholder="<!-- Analytics, tracking pixels, or chat widgets -->"><?php echo esc_textarea( $settings['ads_foot'] ); ?></textarea>
-              </div>
-
-              <div class="srm-form-actions-bar">
-                <button type="submit" class="srm-btn srm-btn-primary" id="srm-save-settings-btn">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                  <span><?php _e( 'Save All Settings', 'safe-redirect-masker' ); ?></span>
-                </button>
-              </div>
-            </div>
+          <div class="srm-form-actions-bar" style="grid-column: 1 / -1;">
+            <button type="submit" class="srm-btn srm-btn-primary" id="srm-save-settings-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              <span><?php _e( 'Save Protection Settings', 'safe-redirect-masker' ); ?></span>
+            </button>
           </div>
 
         </div>

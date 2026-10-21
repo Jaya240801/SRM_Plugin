@@ -1,4 +1,4 @@
-﻿# Safe Redirect Masker — WordPress Plugin
+# Safe Redirect Masker — WordPress Plugin
 
 A smart WordPress URL masking plugin that detects real users vs. bot crawlers and handles each differently, with built-in **anti-bomb click** protection.
 

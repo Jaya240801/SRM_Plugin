@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Anti-Bomb Click (Click Fraud / Click Flooding Prevention) — Safe Redirect Masker
  *
@@ -89,14 +89,14 @@ class SRM_Anti_Bomb {
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif}
-    body{background:#0b0f19;color:#f3f4f6;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-    .card{background:#111827;border:1px solid rgba(239,68,68,.25);border-radius:24px;max-width:420px;width:100%;padding:40px 32px;text-align:center;box-shadow:0 25px 60px -15px rgba(0,0,0,.7)}
+    body{background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .card{background:#ffffff;border:1px solid #e2e8f0;border-radius:24px;max-width:440px;width:100%;padding:40px 32px;text-align:center;box-shadow:0 20px 40px -15px rgba(15,23,42,0.1)}
     .icon{font-size:52px;margin-bottom:20px;display:block}
-    h1{font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:10px}
-    p{font-size:.9rem;color:#9ca3af;line-height:1.65;margin-bottom:24px}
-    .badge{display:inline-block;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4);color:#f87171;border-radius:8px;padding:6px 14px;font-size:.8rem;font-weight:600;letter-spacing:.04em}
-    a{display:inline-block;margin-top:20px;background:#6366f1;color:#fff;text-decoration:none;padding:12px 28px;border-radius:12px;font-weight:600;font-size:.9rem}
-    a:hover{background:#4f46e5}
+    h1{font-size:1.4rem;font-weight:800;color:#0f172a;margin-bottom:10px}
+    p{font-size:.9rem;color:#475569;line-height:1.65;margin-bottom:24px}
+    .badge{display:inline-block;background:#fef2f2;border:1px solid #fecaca;color:#dc2626;border-radius:8px;padding:6px 14px;font-size:.8rem;font-weight:600;letter-spacing:.04em}
+    a{display:inline-block;margin-top:20px;background:#2563eb;color:#fff;text-decoration:none;padding:12px 28px;border-radius:12px;font-weight:600;font-size:.9rem;box-shadow:0 4px 14px rgba(37,99,235,0.3);transition:background .2s,transform .15s}
+    a:hover{background:#1d4ed8;transform:translateY(-1px)}
   </style>
 </head>
 <body>

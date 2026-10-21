@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Bot / Crawler Detection — Safe Redirect Masker
  *

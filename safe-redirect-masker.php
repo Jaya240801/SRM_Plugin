@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Safe Redirect Masker
- * Plugin URI:  https://github.com/M-Sulton/SafeRedirect-WP-Plugin
+ * Plugin URI:  https://github.com/Jaya240801/SRM_Plugin
  * Description: Smart URL masking with bot/crawler detection. Real users see a cloaking safelink page with countdown; crawlers get redirected straight to the real article. Includes anti-bomb click (IP rate-limiting) to block click fraud.
  * Version:     1.0.0
- * Author:      Muhammad Sulton
- * Author URI:  https://github.com/M-Sulton
+ * Author:      Jaya240801
+ * Author URI:  https://github.com/Jaya240801
  * Text Domain: safe-redirect-masker
  * Domain Path: /languages
  * License:     GPL v2 or later
@@ -28,7 +28,6 @@ require_once SRM_PATH . 'includes/class-srm-db.php';
 require_once SRM_PATH . 'includes/class-srm-bot-detector.php';
 require_once SRM_PATH . 'includes/class-srm-anti-bomb.php';
 require_once SRM_PATH . 'includes/class-srm-router.php';
-require_once SRM_PATH . 'includes/class-srm-renderer.php';
 require_once SRM_PATH . 'includes/class-srm-ajax.php';
 
 final class SafeRedirectMasker {
@@ -68,7 +67,7 @@ final class SafeRedirectMasker {
 
     public function register_admin_menu() {
         $svg = 'data:image/svg+xml;base64,' . base64_encode(
-            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="2.2">'
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2">'
             . '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'
             . '</svg>'
         );

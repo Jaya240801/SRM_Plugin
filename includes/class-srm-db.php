@@ -146,6 +146,9 @@ class SRM_DB {
             'anti_bomb_limit'    => 5,          // max human clicks per window
             'anti_bomb_window'   => 60,         // rate-limit window in seconds
             'bomb_lockout'       => 300,        // lockout duration after limit hit (seconds)
+            'ad_slot_1'          => '',         // Ad Slot 1 (Top Banner - Above Article)
+            'ad_slot_2'          => '',         // Ad Slot 2 (Middle Banner - Between Article & Countdown)
+            'ad_slot_3'          => '',         // Ad Slot 3 (Bottom Banner - Under Countdown Card)
             'ads_head'           => '',         // custom HTML injected into <head> of safelink page
             'ads_foot'           => '',         // custom HTML injected into </body> of safelink page
         );
@@ -153,17 +156,28 @@ class SRM_DB {
 
     public static function get_settings() {
         $settings = get_option( 'srm_settings', array() );
-        return wp_parse_args( $settings, self::default_settings() );
+        $merged   = wp_parse_args( $settings, self::default_settings() );
+        if ( empty( $merged['url_prefix'] ) ) {
+            $merged['url_prefix'] = 'go';
+        }
+        return $merged;
     }
 
     public static function save_settings( $data ) {
         $current = self::get_settings();
+        $prefix  = ! empty( $data['url_prefix'] ) ? sanitize_key( $data['url_prefix'] ) : ( ! empty( $current['url_prefix'] ) ? $current['url_prefix'] : 'go' );
+        if ( empty( $prefix ) ) {
+            $prefix = 'go';
+        }
         $updated = array(
-            'url_prefix'         => ! empty( $data['url_prefix'] ) ? sanitize_key( $data['url_prefix'] ) : $current['url_prefix'],
+            'url_prefix'         => $prefix,
             'timer'              => isset( $data['timer'] )            ? max( 1, intval( $data['timer'] ) )             : $current['timer'],
             'anti_bomb_limit'    => isset( $data['anti_bomb_limit'] )  ? max( 1, intval( $data['anti_bomb_limit'] ) )   : $current['anti_bomb_limit'],
             'anti_bomb_window'   => isset( $data['anti_bomb_window'] ) ? max( 10, intval( $data['anti_bomb_window'] ) ) : $current['anti_bomb_window'],
             'bomb_lockout'       => isset( $data['bomb_lockout'] )     ? max( 30, intval( $data['bomb_lockout'] ) )     : $current['bomb_lockout'],
+            'ad_slot_1'          => isset( $data['ad_slot_1'] )        ? $data['ad_slot_1']                              : ( $current['ad_slot_1'] ?? '' ),
+            'ad_slot_2'          => isset( $data['ad_slot_2'] )        ? $data['ad_slot_2']                              : ( $current['ad_slot_2'] ?? '' ),
+            'ad_slot_3'          => isset( $data['ad_slot_3'] )        ? $data['ad_slot_3']                              : ( $current['ad_slot_3'] ?? '' ),
             'ads_head'           => isset( $data['ads_head'] )         ? $data['ads_head']                              : $current['ads_head'],
             'ads_foot'           => isset( $data['ads_foot'] )         ? $data['ads_foot']                              : $current['ads_foot'],
         );

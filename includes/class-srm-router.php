@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Front-end Request Router — Safe Redirect Masker
  *
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 class SRM_Router {
 
     public static function init() {
-        add_action( 'template_redirect', array( __CLASS__, 'handle_request' ), 1 );
+        add_action( 'template_redirect', array( __CLASS__, 'handle_request' ), 5 );
     }
 
     public static function handle_request() {
@@ -35,21 +35,20 @@ class SRM_Router {
 
         if ( empty( $path ) ) { return; }
 
+        // Skip static files, ads.txt, robots.txt, and sitemaps so other plugins (e.g. AdsExplorer) and WP core are unaffected
+        if ( 'ads.txt' === strtolower( $path ) || 'robots.txt' === strtolower( $path ) || preg_match( '~\.(txt|xml|json|ico|png|jpg|jpeg|gif|webp|svg|css|js)$~i', $path ) ) {
+            return;
+        }
+
         $settings = SRM_DB::get_settings();
-        $prefix   = sanitize_key( $settings['url_prefix'] );   // e.g. "go"
+        $prefix   = ! empty( $settings['url_prefix'] ) ? sanitize_key( $settings['url_prefix'] ) : 'go';
 
         // Match /{prefix}/{slug}
-        if ( ! empty( $prefix ) ) {
-            $pattern = '~^' . preg_quote( $prefix, '~' ) . '/(.+)$~i';
-            if ( preg_match( $pattern, $path, $m ) ) {
-                $slug = SRM_DB::sanitize_slug( $m[1] );
-                self::dispatch( $slug );
-                return;
-            }
-        } else {
-            // No prefix — match any slug (flat)
-            $slug = SRM_DB::sanitize_slug( $path );
+        $pattern = '~^' . preg_quote( $prefix, '~' ) . '/(.+)$~i';
+        if ( preg_match( $pattern, $path, $m ) ) {
+            $slug = SRM_DB::sanitize_slug( $m[1] );
             self::dispatch( $slug );
+            return;
         }
     }
 
@@ -76,6 +75,28 @@ class SRM_Router {
         }
 
         // ── HUMAN PATH ───────────────────────────────────────────────────────
+
+        // Option B: Instant Bypass on Refresh / Re-visit within session
+        $salt        = defined( 'AUTH_KEY' ) ? AUTH_KEY : 'srm_bypass_salt';
+        $cookie_name = 'srm_v_' . substr( hash( 'sha256', $link['slug'] . $salt ), 0, 16 );
+        $is_preview  = isset( $_GET['preview'] ) || isset( $_GET['srm_reset'] );
+
+        if ( ! $is_preview && ! empty( $_COOKIE[ $cookie_name ] ) ) {
+            // Visitor refreshed or revisited this safelink — redirect directly to real destination
+            wp_redirect( esc_url_raw( $link['real_url'] ), 302 );
+            exit;
+        }
+
+        // Set bypass cookie for this slug (valid for 1 hour / 3600 seconds)
+        if ( ! headers_sent() ) {
+            $cookie_path   = ( defined( 'COOKIEPATH' ) && COOKIEPATH ) ? COOKIEPATH : '/';
+            $cookie_domain = ( defined( 'COOKIE_DOMAIN' ) && COOKIE_DOMAIN ) ? COOKIE_DOMAIN : '';
+            if ( $is_preview ) {
+                setcookie( $cookie_name, '', time() - 3600, $cookie_path, $cookie_domain, is_ssl(), false );
+            } else {
+                setcookie( $cookie_name, '1', time() + 3600, $cookie_path, $cookie_domain, is_ssl(), false );
+            }
+        }
 
         // Anti-bomb check
         if ( ! SRM_Anti_Bomb::is_allowed( $link['id'], $ip ) ) {
