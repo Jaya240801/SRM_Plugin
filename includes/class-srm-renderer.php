@@ -998,6 +998,17 @@ class SRM_Renderer {
     }, 250);
   }
 
+  function scrollToFinalCard() {
+    var finalCard = document.getElementById('srm-final-card');
+    if (finalCard) {
+      finalCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      finalCard.classList.add('srm-card-highlight');
+      setTimeout(function () {
+        finalCard.classList.remove('srm-card-highlight');
+      }, 2500);
+    }
+  }
+
   function closeAdModal() {
     if (!adModal) return;
     adModal.classList.remove('srm-modal-open');
@@ -1019,7 +1030,7 @@ class SRM_Renderer {
     modalContinueBtn.addEventListener('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
-      closeAdModal();
+      window.location.href = dest;
     });
   }
 
