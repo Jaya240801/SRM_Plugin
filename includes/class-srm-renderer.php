@@ -36,7 +36,7 @@ class SRM_Renderer {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?php echo $title; ?></title>
-  <meta name="robots" content="noindex, nofollow">
+  <meta name="robots" content="noindex, follow">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -329,13 +329,16 @@ class SRM_Renderer {
     }
     .srm-ad-content {
       width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      min-width: 250px;
+      margin: 0 auto;
+      text-align: center;
       overflow-x: auto;
     }
     .srm-ad-content ins.adsbygoogle {
       display: block !important;
+      width: 100% !important;
+      min-width: 250px !important;
+      min-height: 90px !important;
       margin: 0 auto !important;
     }
     /* ─── Scroll Lock & Final Card ────────────────────────────────────── */

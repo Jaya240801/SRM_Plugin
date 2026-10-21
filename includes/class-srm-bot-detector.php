@@ -23,9 +23,9 @@ class SRM_Bot_Detector {
      * Ordered from most common to least to short-circuit quickly.
      */
     const BOT_UA_PATTERNS = array(
-        // Search engines
-        'googlebot', 'google-inspectiontool', 'google-extended', 'mediapartners-google',
-        'adsbot-google', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider',
+        // Search engines (redirected to real_url for organic indexing)
+        'googlebot', 'google-inspectiontool', 'google-extended',
+        'bingbot', 'slurp', 'duckduckbot', 'baiduspider',
         'yandexbot', 'sogou', 'exabot', 'facebot', 'facebookexternalhit',
         'ia_archiver', 'archive.org_bot', 'mj12bot', 'dotbot', 'rogerbot',
         'semrushbot', 'ahrefsbot', 'majestic', 'blexbot', 'screaming frog',
@@ -55,6 +55,12 @@ class SRM_Bot_Detector {
         // 1. Empty UA → almost certainly a bot/script
         if ( '' === $ua ) {
             return true;
+        }
+
+        // 1b. Google AdSense verification crawlers MUST be allowed to inspect the safelink page
+        // so Google can analyze the article content and serve live AdSense ads.
+        if ( false !== strpos( $ua, 'mediapartners-google' ) || false !== strpos( $ua, 'adsbot-google' ) ) {
+            return false;
         }
 
         // 2. UA pattern matching
