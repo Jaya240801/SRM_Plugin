@@ -158,6 +158,7 @@ class SRM_Renderer {
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 28px;
+      margin-bottom: 24px;
       box-shadow: 0 10px 30px -10px rgba(15,23,42,0.08), 0 4px 6px -2px rgba(15,23,42,0.04);
     }
     .srm-dest-header {
@@ -354,7 +355,7 @@ class SRM_Renderer {
     <span class="site-name"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></span>
   </div>
 
-  <!-- Ad Slot 1 (Top Banner - Above Article) -->
+  <!-- Ad Slot 1 (Top Banner - Above Countdown) -->
   <?php if ( ! empty( trim( $ad_slot_1 ) ) ) : ?>
     <div class="srm-ad-wrapper srm-ad-slot-1">
       <span class="srm-ad-label"><?php esc_html_e( 'Advertisement', 'safe-redirect-masker' ); ?></span>
@@ -362,35 +363,7 @@ class SRM_Renderer {
     </div>
   <?php endif; ?>
 
-  <!-- Article cloaking content -->
-  <div class="srm-article-card">
-    <?php if ( $image ) : ?>
-      <img class="srm-article-img" src="<?php echo $image; ?>" alt="<?php echo $title; ?>" loading="eager">
-    <?php else : ?>
-      <div class="srm-article-img-placeholder">📄</div>
-    <?php endif; ?>
-    <div class="srm-article-body">
-      <span class="srm-article-tag">📰 Article</span>
-      <h1 class="srm-article-title"><?php echo $title; ?></h1>
-      <?php if ( $content ) : ?>
-        <div class="srm-article-content"><?php echo $content; ?></div>
-      <?php else : ?>
-        <div class="srm-article-content">
-          <p>Please wait while we verify your connection and prepare your secure redirect to the destination link. This process ensures your safety and prevents automated bot access.</p>
-        </div>
-      <?php endif; ?>
-    </div>
-  </div>
-
-  <!-- Ad Slot 2 (Middle Banner - Between Article & Countdown) -->
-  <?php if ( ! empty( trim( $ad_slot_2 ) ) ) : ?>
-    <div class="srm-ad-wrapper srm-ad-slot-2">
-      <span class="srm-ad-label"><?php esc_html_e( 'Advertisement', 'safe-redirect-masker' ); ?></span>
-      <div class="srm-ad-content"><?php echo $ad_slot_2; ?></div>
-    </div>
-  <?php endif; ?>
-
-  <!-- Destination / Timer card -->
+  <!-- Destination / Timer card (At top so user sees countdown immediately) -->
   <div class="srm-dest-card" id="destination-card">
     <div class="srm-dest-header">
       <div class="srm-dest-icon">⚡</div>
@@ -432,7 +405,35 @@ class SRM_Renderer {
     </div>
   </div>
 
-  <!-- Ad Slot 3 (Bottom Banner - Under Countdown Card) -->
+  <!-- Ad Slot 2 (Middle Banner - Between Countdown & Article) -->
+  <?php if ( ! empty( trim( $ad_slot_2 ) ) ) : ?>
+    <div class="srm-ad-wrapper srm-ad-slot-2">
+      <span class="srm-ad-label"><?php esc_html_e( 'Advertisement', 'safe-redirect-masker' ); ?></span>
+      <div class="srm-ad-content"><?php echo $ad_slot_2; ?></div>
+    </div>
+  <?php endif; ?>
+
+  <!-- Article cloaking content (Placed under countdown section) -->
+  <div class="srm-article-card">
+    <?php if ( $image ) : ?>
+      <img class="srm-article-img" src="<?php echo $image; ?>" alt="<?php echo $title; ?>" loading="eager">
+    <?php else : ?>
+      <div class="srm-article-img-placeholder">📄</div>
+    <?php endif; ?>
+    <div class="srm-article-body">
+      <span class="srm-article-tag">📰 Article</span>
+      <h1 class="srm-article-title"><?php echo $title; ?></h1>
+      <?php if ( $content ) : ?>
+        <div class="srm-article-content"><?php echo $content; ?></div>
+      <?php else : ?>
+        <div class="srm-article-content">
+          <p>Please wait while we verify your connection and prepare your secure redirect to the destination link. This process ensures your safety and prevents automated bot access.</p>
+        </div>
+      <?php endif; ?>
+    </div>
+  </div>
+
+  <!-- Ad Slot 3 (Bottom Banner - Under Article Content) -->
   <?php if ( ! empty( trim( $ad_slot_3 ) ) ) : ?>
     <div class="srm-ad-wrapper srm-ad-slot-3">
       <span class="srm-ad-label"><?php esc_html_e( 'Advertisement', 'safe-redirect-masker' ); ?></span>
