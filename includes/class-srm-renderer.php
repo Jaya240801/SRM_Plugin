@@ -411,18 +411,18 @@ class SRM_Renderer {
       border-color: #f59e0b !important;
       box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25) !important;
     }
-    /* ─── Full Screen Ad Modal (Expanded Screen Size) ─────────────────── */
+    /* ─── Full Screen Ad Modal ────────────────────────────────────────── */
     .srm-ad-modal-overlay {
       position: fixed;
       inset: 0;
       z-index: 999999;
-      background: rgba(15, 23, 42, 0.88);
+      background: rgba(15, 23, 42, 0.82);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 12px;
+      padding: 16px;
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
@@ -436,17 +436,16 @@ class SRM_Renderer {
     .srm-ad-modal-dialog {
       background: #ffffff;
       border-radius: 20px;
-      width: 98vw;
-      max-width: 1200px;
-      height: 96vh;
-      max-height: 96vh;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.15);
+      width: 100%;
+      max-width: 650px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
       display: flex;
       flex-direction: column;
       position: relative;
-      transform: scale(0.96) translateY(10px);
+      transform: scale(0.92) translateY(15px);
       transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      overflow: hidden;
     }
     .srm-ad-modal-overlay.srm-modal-open .srm-ad-modal-dialog {
       transform: scale(1) translateY(0);
@@ -455,7 +454,7 @@ class SRM_Renderer {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 24px;
+      padding: 14px 20px;
       border-bottom: 1px solid var(--border);
       background: #f8fafc;
       border-top-left-radius: 20px;
@@ -463,10 +462,9 @@ class SRM_Renderer {
       position: sticky;
       top: 0;
       z-index: 10;
-      flex-shrink: 0;
     }
     .srm-ad-modal-badge {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
@@ -478,97 +476,70 @@ class SRM_Renderer {
     .srm-ad-modal-badge::before {
       content: '';
       display: inline-block;
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       background: #3b82f6;
       border-radius: 50%;
     }
     .srm-ad-modal-close {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 18px;
+      gap: 6px;
+      padding: 7px 14px;
       background: #f1f5f9;
-      color: #1e293b;
+      color: #334155;
       border: 1px solid #cbd5e1;
       border-radius: 9999px;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s ease;
       font-family: inherit;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     }
     .srm-ad-modal-close:hover {
-      background: #ef4444;
-      color: #ffffff;
-      border-color: #ef4444;
+      background: #e2e8f0;
+      color: #0f172a;
+      border-color: #94a3b8;
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
     }
     .srm-ad-modal-close:active {
       transform: translateY(0);
     }
     .srm-ad-modal-body {
-      padding: 24px 16px;
+      padding: 24px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      flex: 1 1 auto;
-      overflow-y: auto;
+      min-height: 280px;
       overflow-x: hidden;
-      width: 100%;
-      background: #fafafa;
     }
     .srm-ad-modal-ad-wrap {
       width: 100%;
-      max-width: 100%;
-      flex: 1 1 auto;
+      min-width: 280px;
+      text-align: center;
       display: flex;
       justify-content: center;
       align-items: center;
-      text-align: center;
-      min-height: 400px;
+      overflow: hidden;
     }
     .srm-ad-modal-ad-wrap ins.adsbygoogle {
       display: block !important;
       margin: 0 auto !important;
-      width: 100% !important;
-      min-width: 300px !important;
-      min-height: 350px !important;
-      max-width: 1100px !important;
+      min-width: 250px !important;
+      min-height: 250px !important;
     }
     .srm-ad-modal-footer {
-      padding: 10px 20px;
+      padding: 12px 20px;
       background: #f8fafc;
       border-top: 1px solid var(--border);
       text-align: center;
       border-bottom-left-radius: 20px;
       border-bottom-right-radius: 20px;
-      flex-shrink: 0;
     }
     .srm-ad-modal-footer-note {
       font-size: 0.78rem;
       color: var(--muted);
-    }
-    @media (max-width: 768px) {
-      .srm-ad-modal-overlay {
-        padding: 0;
-      }
-      .srm-ad-modal-dialog {
-        width: 100vw;
-        height: 100vh;
-        max-height: 100vh;
-        border-radius: 0;
-      }
-      .srm-ad-modal-header {
-        border-radius: 0;
-        padding: 12px 16px;
-      }
-      .srm-ad-modal-footer {
-        border-radius: 0;
-      }
     }
     /* ─── Responsive ─────────────────────────────────────────────────── */
     @media (max-width: 600px) {
