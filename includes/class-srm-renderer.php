@@ -361,7 +361,17 @@ class SRM_Renderer {
     .srm-btn-final {
       background: linear-gradient(135deg, var(--primary), var(--primary2));
       box-shadow: 0 8px 20px -4px rgba(37,99,235,.45);
+    }
+    .srm-btn-final:not(.disabled):not(:disabled) {
       animation: srm-pulse-btn 2.2s infinite;
+    }
+    .srm-btn.disabled,
+    .srm-btn:disabled {
+      opacity: .55 !important;
+      cursor: not-allowed !important;
+      transform: none !important;
+      box-shadow: none !important;
+      pointer-events: auto !important;
     }
     @keyframes srm-pulse-btn {
       0%, 100% { transform: scale(1); box-shadow: 0 8px 20px -4px rgba(37,99,235,.4); }
@@ -473,25 +483,25 @@ class SRM_Renderer {
   <!-- Final Step Destination Card (Step 2 - Final destination link) -->
   <div class="srm-dest-card srm-final-card" id="srm-final-card">
     <div class="srm-dest-header">
-      <div class="srm-dest-icon">🎯</div>
+      <div class="srm-dest-icon" id="srm-final-icon">🔒</div>
       <div class="srm-dest-header-text">
-        <h2>Destination Ready</h2>
-        <p>Click below to proceed to your destination website</p>
+        <h2 id="srm-final-title">Final Step: Complete Step 1 First</h2>
+        <p id="srm-final-desc">Please complete the countdown at the top to unlock this link</p>
       </div>
     </div>
 
-    <!-- Final CTA button (navigates to destination) -->
-    <a href="<?php echo $dest; ?>" class="srm-btn srm-btn-final" id="srm-final-btn" rel="nofollow noopener">
+    <!-- Final CTA button (starts locked, unlocks only after first button is clicked) -->
+    <button type="button" class="srm-btn srm-btn-final disabled" id="srm-final-btn" disabled>
       <span class="srm-btn-inner">
-        <span>Continue to Destination</span>
-        <span class="srm-btn-arrow">→</span>
+        <span id="srm-final-btn-text">Continue to Destination</span>
+        <span class="srm-btn-arrow" id="srm-final-btn-icon">🔒</span>
       </span>
-    </a>
+    </button>
 
     <!-- Security note -->
     <div class="srm-security-note" style="margin-top:14px;">
       <span class="icon">🔒</span>
-      <span>Safe redirect verified. Thank you for your patience!</span>
+      <span id="srm-final-note">Link is locked. Click "Continue to Destination" at the top once countdown finishes.</span>
     </div>
   </div>
 
@@ -517,6 +527,9 @@ class SRM_Renderer {
       sessionStorage.setItem(sessionKey, '1');
     } catch (e) {}
   }
+
+  // Track whether Step 1 button was clicked
+  var step1Completed = false;
 
   // 1. Prevent scrolling for the first 5 seconds
   var scrollLocked = true;
@@ -561,6 +574,7 @@ class SRM_Renderer {
   var btn       = document.getElementById('srm-btn');
   var cd        = document.getElementById('srm-countdown');
   var prog      = document.getElementById('srm-progress');
+  var finalBtn  = document.getElementById('srm-final-btn');
 
   function tick() {
     remaining--;
@@ -584,13 +598,34 @@ class SRM_Renderer {
   if (prog) prog.style.width = '0%';
   var timer = setInterval(tick, 1000);
 
-  // 3. Step 1 Button Click: Scroll smoothly to the bottom final destination card
+  // 3. Step 1 Button Click: Scroll smoothly to the bottom final destination card AND unlock Step 2
   if (btn) {
     btn.addEventListener('click', function (e) {
       e.preventDefault();
       if (btn.classList.contains('disabled')) return;
 
       unlockScroll();
+      step1Completed = true;
+
+      // Unlock the second button
+      if (finalBtn) {
+        finalBtn.classList.remove('disabled');
+        finalBtn.removeAttribute('disabled');
+        finalBtn.removeAttribute('aria-disabled');
+        var finalBtnText = document.getElementById('srm-final-btn-text');
+        var finalBtnIcon = document.getElementById('srm-final-btn-icon');
+        var finalIcon    = document.getElementById('srm-final-icon');
+        var finalTitle   = document.getElementById('srm-final-title');
+        var finalDesc    = document.getElementById('srm-final-desc');
+        var finalNote    = document.getElementById('srm-final-note');
+
+        if (finalBtnText) finalBtnText.textContent = 'Continue to Destination';
+        if (finalBtnIcon) finalBtnIcon.textContent = '→';
+        if (finalIcon)    finalIcon.textContent    = '🎯';
+        if (finalTitle)   finalTitle.textContent   = 'Destination Ready';
+        if (finalDesc)    finalDesc.textContent    = 'Click below to proceed to your destination website';
+        if (finalNote)    finalNote.textContent    = 'Safe redirect verified. Thank you for your patience!';
+      }
 
       var finalCard = document.getElementById('srm-final-card');
       if (finalCard) {
@@ -603,10 +638,18 @@ class SRM_Renderer {
     });
   }
 
-  // 4. Step 2 Final Button Click: Redirect to destination
-  var finalBtn = document.getElementById('srm-final-btn');
+  // 4. Step 2 Final Button Click: Redirect to destination (only if step 1 was completed)
   if (finalBtn) {
-    finalBtn.addEventListener('click', function () {
+    finalBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (!step1Completed || finalBtn.classList.contains('disabled')) {
+        // If user scrolled down and clicked early, scroll them back up to the top countdown card
+        var topCard = document.getElementById('destination-card');
+        if (topCard) {
+          topCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return false;
+      }
       window.location.href = dest;
     });
   }
