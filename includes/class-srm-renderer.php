@@ -898,6 +898,10 @@ class SRM_Renderer {
   if (btn) {
     btn.addEventListener('click', function (e) {
       e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === 'function') {
+        e.stopImmediatePropagation();
+      }
       if (btn.classList.contains('disabled')) return;
 
       unlockScroll();
@@ -939,6 +943,10 @@ class SRM_Renderer {
   if (finalBtn) {
     finalBtn.addEventListener('click', function (e) {
       e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === 'function') {
+        e.stopImmediatePropagation();
+      }
       if (!step1Completed || finalBtn.classList.contains('disabled')) {
         // If user scrolled down and clicked early, scroll them back up to the top countdown card
         var topCard = document.getElementById('destination-card');
