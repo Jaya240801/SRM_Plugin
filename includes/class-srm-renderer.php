@@ -338,6 +338,35 @@ class SRM_Renderer {
       display: block !important;
       margin: 0 auto !important;
     }
+    /* ─── Scroll Lock & Final Card ────────────────────────────────────── */
+    html.srm-scroll-locked,
+    body.srm-scroll-locked {
+      overflow: hidden !important;
+      height: 100% !important;
+      max-height: 100vh !important;
+      touch-action: none !important;
+      -webkit-overflow-scrolling: auto !important;
+    }
+    .srm-final-card {
+      margin-top: 14px;
+      margin-bottom: 0;
+      border: 2px solid var(--primary);
+      background: var(--surface);
+      transition: all .3s ease;
+    }
+    .srm-final-card.srm-card-highlight {
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.25), 0 15px 35px -5px rgba(37,99,235,0.25) !important;
+      transform: translateY(-2px);
+    }
+    .srm-btn-final {
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      box-shadow: 0 8px 20px -4px rgba(37,99,235,.45);
+      animation: srm-pulse-btn 2.2s infinite;
+    }
+    @keyframes srm-pulse-btn {
+      0%, 100% { transform: scale(1); box-shadow: 0 8px 20px -4px rgba(37,99,235,.4); }
+      50% { transform: scale(1.015); box-shadow: 0 12px 28px -2px rgba(37,99,235,.6); }
+    }
     /* ─── Responsive ─────────────────────────────────────────────────── */
     @media (max-width: 600px) {
       .srm-article-img, .srm-article-img-placeholder { height: 160px; }
@@ -390,13 +419,13 @@ class SRM_Renderer {
       <div class="srm-progress-bar" id="srm-progress"></div>
     </div>
 
-    <!-- CTA button (disabled until countdown ends) -->
-    <a href="<?php echo $dest; ?>" class="srm-btn disabled" id="srm-btn" rel="nofollow noopener">
+    <!-- CTA button (Step 1: scrolls down to bottom final link when countdown ends) -->
+    <button type="button" class="srm-btn disabled" id="srm-btn" disabled>
       <span class="srm-btn-inner">
-        <span>Continue to Destination</span>
-        <span class="srm-btn-arrow">→</span>
+        <span id="srm-btn-text">Continue to Destination</span>
+        <span class="srm-btn-arrow" id="srm-btn-icon">↓</span>
       </span>
-    </a>
+    </button>
 
     <!-- Security note -->
     <div class="srm-security-note">
@@ -441,6 +470,31 @@ class SRM_Renderer {
     </div>
   <?php endif; ?>
 
+  <!-- Final Step Destination Card (Step 2 - Final destination link) -->
+  <div class="srm-dest-card srm-final-card" id="srm-final-card">
+    <div class="srm-dest-header">
+      <div class="srm-dest-icon">🎯</div>
+      <div class="srm-dest-header-text">
+        <h2>Destination Ready</h2>
+        <p>Click below to proceed to your destination website</p>
+      </div>
+    </div>
+
+    <!-- Final CTA button (navigates to destination) -->
+    <a href="<?php echo $dest; ?>" class="srm-btn srm-btn-final" id="srm-final-btn" rel="nofollow noopener">
+      <span class="srm-btn-inner">
+        <span>Continue to Destination</span>
+        <span class="srm-btn-arrow">→</span>
+      </span>
+    </a>
+
+    <!-- Security note -->
+    <div class="srm-security-note" style="margin-top:14px;">
+      <span class="icon">🔒</span>
+      <span>Safe redirect verified. Thank you for your patience!</span>
+    </div>
+  </div>
+
 </div>
 
 <?php echo $ads_foot; ?>
@@ -464,6 +518,44 @@ class SRM_Renderer {
     } catch (e) {}
   }
 
+  // 1. Prevent scrolling for the first 5 seconds
+  var scrollLocked = true;
+  document.documentElement.classList.add('srm-scroll-locked');
+  document.body.classList.add('srm-scroll-locked');
+
+  function preventScroll(e) {
+    if (scrollLocked) {
+      e.preventDefault();
+      return false;
+    }
+  }
+
+  function preventScrollKeys(e) {
+    if (!scrollLocked) return;
+    var keys = [32, 33, 34, 35, 36, 37, 38, 39, 40];
+    if (keys.indexOf(e.keyCode) !== -1) {
+      e.preventDefault();
+      return false;
+    }
+  }
+
+  window.addEventListener('wheel', preventScroll, { passive: false });
+  window.addEventListener('touchmove', preventScroll, { passive: false });
+  window.addEventListener('keydown', preventScrollKeys, false);
+
+  function unlockScroll() {
+    if (!scrollLocked) return;
+    scrollLocked = false;
+    document.documentElement.classList.remove('srm-scroll-locked');
+    document.body.classList.remove('srm-scroll-locked');
+    window.removeEventListener('wheel', preventScroll);
+    window.removeEventListener('touchmove', preventScroll);
+    window.removeEventListener('keydown', preventScrollKeys);
+  }
+
+  setTimeout(unlockScroll, 5000);
+
+  // 2. Countdown Timer
   var total     = <?php echo intval( $timer ); ?>;
   var remaining = total;
   var btn       = document.getElementById('srm-btn');
@@ -481,14 +573,43 @@ class SRM_Renderer {
       if (btn) {
         btn.classList.remove('disabled');
         btn.removeAttribute('disabled');
+        btn.removeAttribute('aria-disabled');
       }
-      window.location.href = dest;
+      var timerDesc = document.querySelector('.srm-timer-desc');
+      if (timerDesc) timerDesc.textContent = 'Verification complete! Click the button below to continue.';
     }
   }
 
   // Kick off progress bar at 0 immediately
   if (prog) prog.style.width = '0%';
   var timer = setInterval(tick, 1000);
+
+  // 3. Step 1 Button Click: Scroll smoothly to the bottom final destination card
+  if (btn) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (btn.classList.contains('disabled')) return;
+
+      unlockScroll();
+
+      var finalCard = document.getElementById('srm-final-card');
+      if (finalCard) {
+        finalCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        finalCard.classList.add('srm-card-highlight');
+        setTimeout(function () {
+          finalCard.classList.remove('srm-card-highlight');
+        }, 2500);
+      }
+    });
+  }
+
+  // 4. Step 2 Final Button Click: Redirect to destination
+  var finalBtn = document.getElementById('srm-final-btn');
+  if (finalBtn) {
+    finalBtn.addEventListener('click', function () {
+      window.location.href = dest;
+    });
+  }
 })();
 </script>
 </body>
