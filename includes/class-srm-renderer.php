@@ -411,7 +411,7 @@ class SRM_Renderer {
       border-color: #f59e0b !important;
       box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25) !important;
     }
-    /* ─── Compact Ad Modal (Optimized for 300x250 / 336x280 Ads) ────── */
+    /* ─── In-Feed / Fluid Ad Modal Overlay ────────────────────────────── */
     .srm-ad-modal-overlay {
       position: fixed;
       inset: 0;
@@ -436,15 +436,16 @@ class SRM_Renderer {
     .srm-ad-modal-dialog {
       background: #ffffff;
       border-radius: 18px;
-      width: 92%;
-      max-width: 440px;
-      max-height: 88vh;
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      overflow-x: hidden;
+      box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.08);
       display: flex;
       flex-direction: column;
       position: relative;
-      transform: scale(0.92) translateY(12px);
+      transform: scale(0.96) translateY(12px);
       transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .srm-ad-modal-overlay.srm-modal-open .srm-ad-modal-dialog {
@@ -464,22 +465,22 @@ class SRM_Renderer {
       z-index: 10;
     }
     .srm-ad-modal-badge {
-      font-size: 0.72rem;
+      font-size: 0.74rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: #64748b;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
     }
-    .srm-ad-modal-badge::before {
-      content: '';
+    .srm-ad-modal-badge-dot {
       display: inline-block;
-      width: 7px;
-      height: 7px;
+      width: 8px;
+      height: 8px;
       background: #3b82f6;
       border-radius: 50%;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
     }
     .srm-ad-modal-close {
       display: inline-flex;
@@ -506,43 +507,84 @@ class SRM_Renderer {
       transform: translateY(0);
     }
     .srm-ad-modal-body {
-      padding: 18px 14px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 270px;
+      padding: 16px;
+      display: block;
+      min-height: 250px;
       overflow-x: hidden;
       background: #ffffff;
+      box-sizing: border-box;
+    }
+    /* Feed Card Container for Google In-Feed Ads */
+    .srm-infeed-card-box {
+      width: 100%;
+      max-width: 448px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 10px;
+      box-sizing: border-box;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
     }
     .srm-ad-modal-ad-wrap {
       width: 100%;
-      max-width: 380px;
       margin: 0 auto;
-      text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      text-align: left;
+      display: block;
       overflow: hidden;
+      min-height: 200px;
+      box-sizing: border-box;
     }
     .srm-ad-modal-ad-wrap ins.adsbygoogle {
       display: block !important;
-      margin: 0 auto !important;
-      min-width: 250px !important;
+      width: 100% !important;
       max-width: 100% !important;
-      min-height: 250px !important;
+      margin: 0 auto !important;
+      background: transparent !important;
     }
     .srm-ad-modal-footer {
-      padding: 10px 16px;
+      padding: 14px 18px 16px;
       background: #f8fafc;
       border-top: 1px solid var(--border);
       text-align: center;
       border-bottom-left-radius: 18px;
       border-bottom-right-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+    .srm-btn-modal-continue {
+      width: 100%;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .srm-btn-modal-continue:hover {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+    }
+    .srm-btn-modal-continue:active {
+      transform: translateY(0);
     }
     .srm-ad-modal-footer-note {
       font-size: 0.76rem;
       color: var(--muted);
+      line-height: 1.4;
     }
     /* ─── Responsive ─────────────────────────────────────────────────── */
     @media (max-width: 600px) {
@@ -553,7 +595,7 @@ class SRM_Renderer {
   </style>
 </head>
 <body>
-<div class="srm-wrap">
+<div class="srm-wrap google-anno-skip">
 
   <!-- Site badge -->
   <div class="srm-site-badge">
@@ -681,26 +723,39 @@ class SRM_Renderer {
 </div>
 
 <?php if ( ! empty( trim( $ad_modal ) ) ) : ?>
-<!-- Full Screen Modal Ad -->
-<div id="srm-ad-modal" class="srm-ad-modal-overlay" aria-modal="true" role="dialog" aria-hidden="true">
+<!-- In-Feed / Fluid Modal Ad -->
+<div id="srm-ad-modal" class="srm-ad-modal-overlay google-anno-skip" aria-modal="true" role="dialog" aria-hidden="true">
   <div class="srm-ad-modal-dialog">
     <div class="srm-ad-modal-header">
-      <span class="srm-ad-modal-badge"><?php esc_html_e( 'Advertisement', 'safe-redirect-masker' ); ?></span>
+      <span class="srm-ad-modal-badge">
+        <span class="srm-ad-modal-badge-dot"></span>
+        <?php esc_html_e( 'Sponsored Recommendation', 'safe-redirect-masker' ); ?>
+      </span>
       <button type="button" class="srm-ad-modal-close" id="srm-modal-close-ad-btn" aria-label="<?php esc_attr_e( 'Close Ad', 'safe-redirect-masker' ); ?>">
         <span><?php esc_html_e( 'Close Ad', 'safe-redirect-masker' ); ?></span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
     </div>
     <div class="srm-ad-modal-body">
-      <div class="srm-ad-modal-ad-wrap">
-        <?php echo $ad_modal; ?>
+      <div class="srm-infeed-card-box">
+        <div class="srm-ad-modal-ad-wrap" id="srm-ad-modal-ad-wrap">
+          <!-- In-Feed Ad dynamically injected when modal opens -->
+        </div>
       </div>
     </div>
     <div class="srm-ad-modal-footer">
-      <span class="srm-ad-modal-footer-note"><?php esc_html_e( 'Click &quot;Close Ad&quot; to continue to your verified link', 'safe-redirect-masker' ); ?></span>
+      <button type="button" class="srm-btn-modal-continue" id="srm-modal-continue-btn">
+        <span><?php esc_html_e( 'Continue to Destination', 'safe-redirect-masker' ); ?></span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+      </button>
+      <span class="srm-ad-modal-footer-note"><?php esc_html_e( 'Click above or close to proceed to your verified link', 'safe-redirect-masker' ); ?></span>
     </div>
   </div>
 </div>
+
+<template id="srm-modal-ad-template">
+  <?php echo $ad_modal; ?>
+</template>
 <?php endif; ?>
 
 <?php echo $ads_foot; ?>
@@ -860,9 +915,61 @@ class SRM_Renderer {
     }
   }
 
-  // Modal close handler
-  var adModal    = document.getElementById('srm-ad-modal');
-  var closeAdBtn = document.getElementById('srm-modal-close-ad-btn');
+  // Modal handlers
+  var adModal          = document.getElementById('srm-ad-modal');
+  var closeAdBtn       = document.getElementById('srm-modal-close-ad-btn');
+  var modalContinueBtn = document.getElementById('srm-modal-continue-btn');
+  var modalAdLoaded    = false;
+
+  function loadModalAdContent() {
+    if (modalAdLoaded) return;
+    modalAdLoaded = true;
+
+    var tpl = document.getElementById('srm-modal-ad-template');
+    var wrap = document.getElementById('srm-ad-modal-ad-wrap');
+    if (!tpl || !wrap) return;
+
+    // Inject template HTML into the now-visible container
+    wrap.innerHTML = tpl.innerHTML;
+
+    // Ensure AdSense library is present
+    if (!window.adsbygoogle && !document.querySelector('script[src*="adsbygoogle.js"]')) {
+      var adScript = document.createElement('script');
+      adScript.async = true;
+      adScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+      adScript.crossOrigin = 'anonymous';
+      document.head.appendChild(adScript);
+    }
+
+    // Execute any script tags inside the template (such as push or external script)
+    var scripts = Array.prototype.slice.call(wrap.getElementsByTagName('script'));
+    scripts.forEach(function (oldScript) {
+      var newScript = document.createElement('script');
+      Array.prototype.slice.call(oldScript.attributes).forEach(function (attr) {
+        newScript.setAttribute(attr.name, attr.value);
+      });
+      newScript.textContent = oldScript.textContent;
+      oldScript.parentNode.replaceChild(newScript, oldScript);
+    });
+
+    // For fluid in-feed ads, if ins.adsbygoogle is not yet pushed, call push({})
+    var insElements = wrap.querySelectorAll('ins.adsbygoogle');
+    insElements.forEach(function (ins) {
+      if (!ins.getAttribute('data-adsbygoogle-status')) {
+        try {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (err) {}
+      }
+    });
+
+    // Dispatch resize ticks so Google AdSense fluid layout engine measures visible container
+    setTimeout(function () {
+      try { window.dispatchEvent(new Event('resize')); } catch (e) {}
+    }, 50);
+    setTimeout(function () {
+      try { window.dispatchEvent(new Event('resize')); } catch (e) {}
+    }, 200);
+  }
 
   function closeAdModal() {
     if (!adModal) return;
@@ -876,6 +983,15 @@ class SRM_Renderer {
   if (closeAdBtn) {
     closeAdBtn.addEventListener('click', function (e) {
       e.preventDefault();
+      e.stopPropagation();
+      closeAdModal();
+    });
+  }
+
+  if (modalContinueBtn) {
+    modalContinueBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
       closeAdModal();
     });
   }
@@ -927,12 +1043,12 @@ class SRM_Renderer {
         if (finalNote)    finalNote.textContent    = 'Safe redirect verified. Thank you for your patience!';
       }
 
-      // If Modal Ad is present, pop up full screen modal ad; otherwise scroll directly to bottom card
+      // If Modal Ad is present, pop up in-feed modal ad; otherwise scroll directly to bottom card
       if (adModal) {
         adModal.classList.add('srm-modal-open');
         adModal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
-        try { window.dispatchEvent(new Event('resize')); } catch (err) {}
+        loadModalAdContent();
       } else {
         scrollToFinalCard();
       }

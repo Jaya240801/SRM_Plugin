@@ -321,14 +321,14 @@ $site_domain = wp_parse_url( home_url(), PHP_URL_HOST );
                 <div class="srm-hint"><?php _e( 'Displayed directly underneath the cloaking article content.', 'safe-redirect-masker' ); ?></div>
               </div>
 
-              <!-- Modal Ad Slot (Full Screen Overlay) -->
+              <!-- Modal Ad Slot (In-Feed / Modal Card) -->
               <div class="srm-ad-slot-card">
                 <div class="srm-ad-slot-header">
-                  <span class="srm-badge srm-badge-primary"><?php _e( 'Full Screen Modal', 'safe-redirect-masker' ); ?></span>
+                  <span class="srm-badge srm-badge-primary"><?php _e( 'In-Feed / Modal Ad', 'safe-redirect-masker' ); ?></span>
                   <strong><?php _e( 'Modal Ad (Triggered on Continue to Destination)', 'safe-redirect-masker' ); ?></strong>
                 </div>
-                <textarea name="ad_modal" class="srm-textarea srm-textarea-code" rows="6" placeholder="<!-- Paste Modal Ad Unit: <ins class=&quot;adsbygoogle&quot; ...></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->"><?php echo esc_textarea( $settings['ad_modal'] ?? '' ); ?></textarea>
-                <div class="srm-hint"><?php _e( 'Displays as a full-screen modal overlay with a &quot;Close Ad&quot; button on the top right when the visitor clicks the first &quot;Continue to Destination&quot; button.', 'safe-redirect-masker' ); ?></div>
+                <textarea name="ad_modal" class="srm-textarea srm-textarea-code" rows="6" placeholder="<!-- Paste In-Feed Ad Unit or Display Ad: <ins class=&quot;adsbygoogle&quot; data-ad-format=&quot;fluid&quot; ...></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->"><?php echo esc_textarea( $settings['ad_modal'] ?? '' ); ?></textarea>
+                <div class="srm-hint"><?php _e( 'Optimized for In-Feed (fluid format) or Display Ads. Displays as a branded feed-card modal with &quot;Close Ad&quot; and &quot;Continue to Destination&quot; buttons when the first button is clicked.', 'safe-redirect-masker' ); ?></div>
               </div>
 
             </div>
