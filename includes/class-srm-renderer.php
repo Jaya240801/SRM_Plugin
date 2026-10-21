@@ -28,6 +28,7 @@ class SRM_Renderer {
         $ad_slot_1 = $settings['ad_slot_1'] ?? '';
         $ad_slot_2 = $settings['ad_slot_2'] ?? '';
         $ad_slot_3 = $settings['ad_slot_3'] ?? '';
+        $ad_modal  = $settings['ad_modal']  ?? '';
         $slug      = esc_html( $link['slug'] );
         $dest_js   = json_encode( $link['real_url'] );
 
@@ -410,6 +411,136 @@ class SRM_Renderer {
       border-color: #f59e0b !important;
       box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25) !important;
     }
+    /* ─── Full Screen Ad Modal ────────────────────────────────────────── */
+    .srm-ad-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .srm-ad-modal-overlay.srm-modal-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .srm-ad-modal-dialog {
+      background: #ffffff;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 650px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transform: scale(0.92) translateY(15px);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .srm-ad-modal-overlay.srm-modal-open .srm-ad-modal-dialog {
+      transform: scale(1) translateY(0);
+    }
+    .srm-ad-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      background: #f8fafc;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .srm-ad-modal-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .srm-ad-modal-badge::before {
+      content: '';
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: #3b82f6;
+      border-radius: 50%;
+    }
+    .srm-ad-modal-close {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .srm-ad-modal-close:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+      border-color: #94a3b8;
+      transform: translateY(-1px);
+    }
+    .srm-ad-modal-close:active {
+      transform: translateY(0);
+    }
+    .srm-ad-modal-body {
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      overflow-x: hidden;
+    }
+    .srm-ad-modal-ad-wrap {
+      width: 100%;
+      min-width: 280px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    .srm-ad-modal-ad-wrap ins.adsbygoogle {
+      display: block !important;
+      margin: 0 auto !important;
+      min-width: 250px !important;
+      min-height: 250px !important;
+    }
+    .srm-ad-modal-footer {
+      padding: 12px 20px;
+      background: #f8fafc;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+    .srm-ad-modal-footer-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
     /* ─── Responsive ─────────────────────────────────────────────────── */
     @media (max-width: 600px) {
       .srm-article-img, .srm-article-img-placeholder { height: 160px; }
@@ -545,6 +676,29 @@ class SRM_Renderer {
   </div>
 
 </div>
+
+<?php if ( ! empty( trim( $ad_modal ) ) ) : ?>
+<!-- Full Screen Modal Ad -->
+<div id="srm-ad-modal" class="srm-ad-modal-overlay" aria-modal="true" role="dialog" aria-hidden="true">
+  <div class="srm-ad-modal-dialog">
+    <div class="srm-ad-modal-header">
+      <span class="srm-ad-modal-badge"><?php esc_html_e( 'Advertisement', 'safe-redirect-masker' ); ?></span>
+      <button type="button" class="srm-ad-modal-close" id="srm-modal-close-ad-btn" aria-label="<?php esc_attr_e( 'Close Ad', 'safe-redirect-masker' ); ?>">
+        <span><?php esc_html_e( 'Close Ad', 'safe-redirect-masker' ); ?></span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="srm-ad-modal-body">
+      <div class="srm-ad-modal-ad-wrap">
+        <?php echo $ad_modal; ?>
+      </div>
+    </div>
+    <div class="srm-ad-modal-footer">
+      <span class="srm-ad-modal-footer-note"><?php esc_html_e( 'Click &quot;Close Ad&quot; to continue to your verified link', 'safe-redirect-masker' ); ?></span>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
 
 <?php echo $ads_foot; ?>
 
@@ -691,7 +845,53 @@ class SRM_Renderer {
   if (prog) prog.style.width = '0%';
   var timer = setInterval(tick, 1000);
 
-  // 3. Step 1 Button Click: Scroll smoothly to the bottom final destination card AND unlock Step 2
+  // Helper: Smooth scroll to final destination card and highlight
+  function scrollToFinalCard() {
+    var finalCard = document.getElementById('srm-final-card');
+    if (finalCard) {
+      finalCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      finalCard.classList.add('srm-card-highlight');
+      setTimeout(function () {
+        finalCard.classList.remove('srm-card-highlight');
+      }, 2500);
+    }
+  }
+
+  // Modal close handler
+  var adModal    = document.getElementById('srm-ad-modal');
+  var closeAdBtn = document.getElementById('srm-modal-close-ad-btn');
+
+  function closeAdModal() {
+    if (!adModal) return;
+    adModal.classList.remove('srm-modal-open');
+    adModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    // Scroll down to the final bottom destination card after closing modal
+    scrollToFinalCard();
+  }
+
+  if (closeAdBtn) {
+    closeAdBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      closeAdModal();
+    });
+  }
+
+  if (adModal) {
+    adModal.addEventListener('click', function (e) {
+      if (e.target === adModal) {
+        closeAdModal();
+      }
+    });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && adModal && adModal.classList.contains('srm-modal-open')) {
+      closeAdModal();
+    }
+  });
+
+  // 3. Step 1 Button Click: Show Modal Ad (if present) and scroll smoothly to final destination card
   if (btn) {
     btn.addEventListener('click', function (e) {
       e.preventDefault();
@@ -720,13 +920,14 @@ class SRM_Renderer {
         if (finalNote)    finalNote.textContent    = 'Safe redirect verified. Thank you for your patience!';
       }
 
-      var finalCard = document.getElementById('srm-final-card');
-      if (finalCard) {
-        finalCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        finalCard.classList.add('srm-card-highlight');
-        setTimeout(function () {
-          finalCard.classList.remove('srm-card-highlight');
-        }, 2500);
+      // If Modal Ad is present, pop up full screen modal ad; otherwise scroll directly to bottom card
+      if (adModal) {
+        adModal.classList.add('srm-modal-open');
+        adModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        try { window.dispatchEvent(new Event('resize')); } catch (err) {}
+      } else {
+        scrollToFinalCard();
       }
     });
   }

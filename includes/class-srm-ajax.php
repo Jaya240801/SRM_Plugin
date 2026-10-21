@@ -213,6 +213,9 @@ class SRM_AJAX {
         if ( isset( $_POST['ad_slot_3'] ) ) {
             $data['ad_slot_3'] = wp_unslash( $_POST['ad_slot_3'] );
         }
+        if ( isset( $_POST['ad_modal'] ) ) {
+            $data['ad_modal'] = wp_unslash( $_POST['ad_modal'] );
+        }
         if ( isset( $_POST['ads_head'] ) ) {
             $data['ads_head'] = wp_unslash( $_POST['ads_head'] );
         }
