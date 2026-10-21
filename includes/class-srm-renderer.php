@@ -471,14 +471,14 @@ class SRM_Renderer {
       background: #ffffff;
       border-radius: 20px;
       width: 100%;
-      max-width: 720px;
+      max-width: 650px;
       max-height: 90vh;
       overflow-y: auto;
       box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
       display: flex;
       flex-direction: column;
       position: relative;
-      transform: scale(0.95) translateY(12px);
+      transform: scale(0.92) translateY(15px);
       transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .srm-ad-modal-overlay.srm-modal-open .srm-ad-modal-dialog {
@@ -486,9 +486,9 @@ class SRM_Renderer {
     }
     .srm-ad-modal-header {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 22px;
+      flex-direction: column;
+      gap: 10px;
+      padding: 14px 20px;
       border-bottom: 1px solid var(--border);
       background: #f8fafc;
       border-top-left-radius: 20px;
@@ -496,6 +496,12 @@ class SRM_Renderer {
       position: sticky;
       top: 0;
       z-index: 10;
+    }
+    .srm-ad-modal-header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
     }
     .srm-ad-modal-badge {
       font-size: 0.72rem;
@@ -519,7 +525,7 @@ class SRM_Renderer {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 7px 15px;
+      padding: 7px 14px;
       background: #f1f5f9;
       color: #334155;
       border: 1px solid #cbd5e1;
@@ -540,50 +546,52 @@ class SRM_Renderer {
       transform: translateY(0);
     }
     .srm-ad-modal-body {
-      padding: 24px 24px 16px;
-      display: block;
+      padding: 20px 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
       overflow-x: hidden;
-      text-align: left;
-    }
-    .srm-modal-article {
-      display: block;
-      width: 100%;
-    }
-    .srm-modal-tag {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--primary);
-      letter-spacing: 0.06em;
-      display: inline-block;
-      margin-bottom: 6px;
-    }
-    .srm-modal-title {
-      font-size: 1.22rem;
-      font-weight: 800;
-      color: var(--text);
-      line-height: 1.35;
-      margin-bottom: 12px;
+      text-align: center;
+      background: #ffffff;
+      flex: 1 1 auto;
+      box-sizing: border-box;
     }
     .srm-modal-paragraph {
-      font-size: 0.94rem;
-      line-height: 1.7;
-      color: #334155;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #475569;
     }
     .srm-modal-paragraph p {
-      margin: 0 0 10px;
-      line-height: 1.7;
+      margin: 0 0 6px;
+      line-height: 1.55;
+    }
+    .srm-modal-paragraph p:last-child {
+      margin-bottom: 0;
+    }
+    .srm-modal-p-intro {
+      text-align: left;
+    }
+    .srm-modal-p-outro {
+      text-align: left;
+      width: 100%;
     }
     .srm-ad-modal-ad-wrap {
       width: 100%;
-      margin: 18px 0;
-      padding: 16px 12px;
+      min-width: 280px;
+      margin: 0 auto;
+      padding: 14px 10px;
       background: #f8fafc;
       border: 1px dashed var(--border);
       border-radius: 12px;
       text-align: center;
       box-sizing: border-box;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
     .srm-ad-modal-ad-wrap .srm-ad-label {
       font-size: 0.65rem;
@@ -604,9 +612,11 @@ class SRM_Renderer {
       display: block !important;
       margin: 0 auto !important;
       text-align: center !important;
+      min-width: 250px !important;
+      min-height: 250px !important;
     }
     .srm-ad-modal-footer {
-      padding: 16px 22px;
+      padding: 14px 20px;
       background: #f8fafc;
       border-top: 1px solid var(--border);
       text-align: center;
@@ -615,7 +625,7 @@ class SRM_Renderer {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
     .srm-btn-modal-continue {
       display: inline-flex;
@@ -649,6 +659,26 @@ class SRM_Renderer {
       .srm-article-img, .srm-article-img-placeholder { height: 160px; }
       .srm-article-title { font-size: 1.2rem; }
       .srm-countdown { font-size: 2.2rem; }
+      .srm-ad-modal-overlay { padding: 8px; }
+      .srm-ad-modal-dialog {
+        width: 100%;
+        max-height: 94vh;
+        border-radius: 16px;
+      }
+      .srm-ad-modal-header {
+        padding: 12px 14px;
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
+      }
+      .srm-ad-modal-body {
+        padding: 14px 10px;
+        min-height: 250px;
+      }
+      .srm-ad-modal-footer {
+        padding: 12px 14px;
+        border-bottom-left-radius: 16px;
+        border-bottom-right-radius: 16px;
+      }
     }
   </style>
 </head>
@@ -783,50 +813,43 @@ class SRM_Renderer {
 <?php if ( ! empty( trim( $ad_modal ) ) ) : ?>
 <!-- Full Screen Modal In-Article Reader Ad -->
 <div id="srm-ad-modal" class="srm-ad-modal-overlay" aria-modal="true" role="dialog" aria-hidden="true">
-  <div class="srm-ad-modal-dialog">
-    <div class="srm-ad-modal-header">
-      <span class="srm-ad-modal-badge"><?php esc_html_e( 'Sponsored Article Preview', 'safe-redirect-masker' ); ?></span>
-      <button type="button" class="srm-ad-modal-close" id="srm-modal-close-ad-btn" aria-label="<?php esc_attr_e( 'Close Ad', 'safe-redirect-masker' ); ?>">
-        <span><?php esc_html_e( 'Close Ad', 'safe-redirect-masker' ); ?></span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
+  <article class="srm-ad-modal-dialog">
+    <!-- Top Header: Badge, Close Button & Intro Paragraph (Red Area) -->
+    <header class="srm-ad-modal-header">
+      <div class="srm-ad-modal-header-top">
+        <span class="srm-ad-modal-badge"><?php esc_html_e( 'Sponsored Article Preview', 'safe-redirect-masker' ); ?></span>
+        <button type="button" class="srm-ad-modal-close" id="srm-modal-close-ad-btn" aria-label="<?php esc_attr_e( 'Close Ad', 'safe-redirect-masker' ); ?>">
+          <span><?php esc_html_e( 'Close Ad', 'safe-redirect-masker' ); ?></span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="srm-modal-paragraph srm-modal-p-intro">
+        <?php echo $intro_p; ?>
+      </div>
+    </header>
+
+    <!-- Middle Body: Ad Unit Only (Green Area) -->
+    <div class="srm-ad-modal-body srm-ad-modal-ad-zone">
+      <div class="srm-ad-modal-ad-wrap">
+        <span class="srm-ad-label"><?php esc_html_e( 'Advertisement', 'safe-redirect-masker' ); ?></span>
+        <div class="srm-ad-modal-slot">
+          <?php echo $ad_modal; ?>
+        </div>
+      </div>
     </div>
 
-    <div class="srm-ad-modal-body">
-      <!-- Article Header & Paragraph Above Ad -->
-      <article class="srm-modal-article">
-        <header class="srm-modal-article-header">
-          <span class="srm-modal-tag">📰 <?php esc_html_e( 'Article Highlights', 'safe-redirect-masker' ); ?></span>
-          <h2 class="srm-modal-title"><?php echo $title; ?></h2>
-        </header>
-
-        <div class="srm-modal-paragraph srm-modal-p-intro">
-          <?php echo $intro_p; ?>
-        </div>
-
-        <!-- In-Article Ad Unit (Placed Between Article Paragraphs) -->
-        <div class="srm-ad-modal-ad-wrap">
-          <span class="srm-ad-label"><?php esc_html_e( 'Advertisement', 'safe-redirect-masker' ); ?></span>
-          <div class="srm-ad-modal-slot">
-            <?php echo $ad_modal; ?>
-          </div>
-        </div>
-
-        <!-- Article Paragraph Below Ad -->
-        <div class="srm-modal-paragraph srm-modal-p-outro">
-          <?php echo $outro_p; ?>
-        </div>
-      </article>
-    </div>
-
-    <div class="srm-ad-modal-footer">
+    <!-- Bottom Footer: Outro Paragraph & Continue Button (Red Area) -->
+    <footer class="srm-ad-modal-footer">
+      <div class="srm-modal-paragraph srm-modal-p-outro">
+        <?php echo $outro_p; ?>
+      </div>
       <button type="button" class="srm-btn-modal-continue" id="srm-modal-continue-btn">
         <span><?php esc_html_e( 'Continue to Destination', 'safe-redirect-masker' ); ?></span>
         <span>↓</span>
       </button>
       <span class="srm-ad-modal-footer-note"><?php esc_html_e( 'Click above or &quot;Close Ad&quot; to scroll to your final destination link', 'safe-redirect-masker' ); ?></span>
-    </div>
-  </div>
+    </footer>
+  </article>
 </div>
 <?php endif; ?>
 
@@ -1064,6 +1087,12 @@ class SRM_Renderer {
         adModal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
         try { window.dispatchEvent(new Event('resize')); } catch (err) {}
+        setTimeout(function () {
+          try { window.dispatchEvent(new Event('resize')); } catch (err) {}
+        }, 80);
+        setTimeout(function () {
+          try { window.dispatchEvent(new Event('resize')); } catch (err) {}
+        }, 360);
       } else {
         scrollToFinalCard();
       }
