@@ -12,7 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class SRM_Renderer {
 
-    public static function render( $link ) {
+    public static function render( $link, $cookie_name = '' ) {
+        if ( empty( $cookie_name ) ) {
+            $salt        = defined( 'AUTH_KEY' ) ? AUTH_KEY : 'srm_bypass_salt';
+            $cookie_name = 'srm_v_' . substr( hash( 'sha256', ( $link['slug'] ?? '' ) . $salt ), 0, 16 );
+        }
         $settings = SRM_DB::get_settings();
         $timer    = max( 1, (int) ( $link['timer'] ?? $settings['timer'] ) );
         $dest     = esc_url( $link['real_url'] );
@@ -380,6 +384,32 @@ class SRM_Renderer {
       0%, 100% { transform: scale(1); box-shadow: 0 8px 20px -4px rgba(37,99,235,.4); }
       50% { transform: scale(1.015); box-shadow: 0 12px 28px -2px rgba(37,99,235,.6); }
     }
+    /* ─── Back Lock Toast & Card Shake ────────────────────────────────── */
+    .srm-back-notice {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      padding: 11px 16px;
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      border-radius: 12px;
+      color: #92400e;
+      font-size: .88rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .srm-back-notice .icon { font-size: 1.1rem; flex-shrink: 0; }
+    @keyframes srm-shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .srm-card-shake {
+      animation: srm-shake 0.45s ease-in-out;
+      border-color: #f59e0b !important;
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25) !important;
+    }
     /* ─── Responsive ─────────────────────────────────────────────────── */
     @media (max-width: 600px) {
       .srm-article-img, .srm-article-img-placeholder { height: 160px; }
@@ -430,6 +460,12 @@ class SRM_Renderer {
     <!-- Progress bar -->
     <div class="srm-progress-track">
       <div class="srm-progress-bar" id="srm-progress"></div>
+    </div>
+
+    <!-- Back lock alert notice -->
+    <div class="srm-back-notice" id="srm-back-notice">
+      <span class="icon">⏳</span>
+      <span id="srm-back-notice-text"><?php esc_html_e( 'Please wait for the countdown to complete to unlock your destination link!', 'safe-redirect-masker' ); ?></span>
     </div>
 
     <!-- CTA button (Step 1: scrolls down to bottom final link when countdown ends) -->
@@ -515,11 +551,13 @@ class SRM_Renderer {
 <script>
 (function () {
   'use strict';
-  var slug      = <?php echo json_encode( $link['slug'] ); ?>;
-  var dest      = <?php echo $dest_js; ?>;
-  var isPreview = <?php echo ( isset( $_GET['preview'] ) || isset( $_GET['srm_reset'] ) ) ? 'true' : 'false'; ?>;
+  var slug       = <?php echo json_encode( $link['slug'] ); ?>;
+  var dest       = <?php echo $dest_js; ?>;
+  var isPreview  = <?php echo ( isset( $_GET['preview'] ) || isset( $_GET['srm_reset'] ) ) ? 'true' : 'false'; ?>;
+  var cookieName = <?php echo json_encode( $cookie_name ); ?>;
 
-  // Option B: If page was already opened in this session (e.g. user refreshes), bypass directly to destination
+  // Option B: If page was already completed in this session (e.g. user refreshes after countdown finished),
+  // bypass directly to destination
   if (!isPreview) {
     var sessionKey = 'srm_visited_' + slug;
     try {
@@ -527,7 +565,6 @@ class SRM_Renderer {
         window.location.replace(dest);
         return;
       }
-      sessionStorage.setItem(sessionKey, '1');
     } catch (e) {}
   }
 
@@ -571,7 +608,45 @@ class SRM_Renderer {
 
   setTimeout(unlockScroll, 5000);
 
-  // 2. Countdown Timer
+  // 2. Back button retention lock (Active ONLY while countdown is running)
+  var backLocked  = true;
+  var noticeTimer = null;
+
+  function showBackNotice() {
+    var notice   = document.getElementById('srm-back-notice');
+    var destCard = document.getElementById('destination-card');
+    if (notice) {
+      notice.style.display = 'flex';
+      notice.style.animation = 'none';
+      notice.offsetHeight; /* Trigger reflow to replay shake */
+      notice.style.animation = 'srm-shake 0.45s ease-in-out';
+    }
+    if (destCard) {
+      destCard.classList.add('srm-card-shake');
+      setTimeout(function () {
+        destCard.classList.remove('srm-card-shake');
+      }, 500);
+    }
+    clearTimeout(noticeTimer);
+    noticeTimer = setTimeout(function () {
+      if (notice && !backLocked) {
+        notice.style.display = 'none';
+      }
+    }, 4000);
+  }
+
+  try {
+    // Push extra history state to trap early back button presses
+    history.pushState({ srm_trap: 1 }, '', window.location.href);
+    window.addEventListener('popstate', function (e) {
+      if (backLocked && remaining > 0) {
+        history.pushState({ srm_trap: 1 }, '', window.location.href);
+        showBackNotice();
+      }
+    });
+  } catch (err) {}
+
+  // 3. Countdown Timer
   var total     = <?php echo intval( $timer ); ?>;
   var remaining = total;
   var btn       = document.getElementById('srm-btn');
@@ -587,6 +662,21 @@ class SRM_Renderer {
 
     if (remaining <= 0) {
       clearInterval(timer);
+      backLocked = false; // Release back button lock once countdown completes!
+      var notice = document.getElementById('srm-back-notice');
+      if (notice) notice.style.display = 'none';
+
+      // Activate 1-hour bypass cookie and sessionStorage ONLY now (user completed countdown)
+      if (!isPreview) {
+        var sessionKey = 'srm_visited_' + slug;
+        try { sessionStorage.setItem(sessionKey, '1'); } catch (e) {}
+
+        if (cookieName) {
+          var expires = new Date(Date.now() + 3600 * 1000).toUTCString();
+          document.cookie = cookieName + '=1; expires=' + expires + '; path=/; SameSite=Lax' + (location.protocol === 'https:' ? '; Secure' : '');
+        }
+      }
+
       if (btn) {
         btn.classList.remove('disabled');
         btn.removeAttribute('disabled');

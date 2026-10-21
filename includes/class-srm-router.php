@@ -87,15 +87,12 @@ class SRM_Router {
             exit;
         }
 
-        // Set bypass cookie for this slug (valid for 1 hour / 3600 seconds)
-        if ( ! headers_sent() ) {
+        // Clear bypass cookie only if preview/reset requested.
+        // The 1-hour bypass cookie is activated via client JS ONLY after the visitor completes the countdown.
+        if ( ! headers_sent() && $is_preview ) {
             $cookie_path   = ( defined( 'COOKIEPATH' ) && COOKIEPATH ) ? COOKIEPATH : '/';
             $cookie_domain = ( defined( 'COOKIE_DOMAIN' ) && COOKIE_DOMAIN ) ? COOKIE_DOMAIN : '';
-            if ( $is_preview ) {
-                setcookie( $cookie_name, '', time() - 3600, $cookie_path, $cookie_domain, is_ssl(), false );
-            } else {
-                setcookie( $cookie_name, '1', time() + 3600, $cookie_path, $cookie_domain, is_ssl(), false );
-            }
+            setcookie( $cookie_name, '', time() - 3600, $cookie_path, $cookie_domain, is_ssl(), false );
         }
 
         // Anti-bomb check
@@ -109,7 +106,7 @@ class SRM_Router {
 
         // Render the safelink/cloaking page
         require_once SRM_PATH . 'includes/class-srm-renderer.php';
-        SRM_Renderer::render( $link );
+        SRM_Renderer::render( $link, $cookie_name );
         exit;
     }
 }
