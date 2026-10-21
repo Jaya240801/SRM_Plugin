@@ -518,8 +518,9 @@ class SRM_Renderer {
       box-sizing: border-box;
       min-height: calc(100vh - 170px);
     }
-    /* Feed Card Container for Google In-Feed Ads (Expanded Fullscreen Width) */
-    .srm-infeed-card-box {
+    /* Card Container for Modal Ads (Fullscreen Display / In-Feed / Banner) */
+    .srm-infeed-card-box,
+    .srm-ad-modal-card-box {
       width: 100%;
       max-width: 820px;
       margin: auto;
@@ -529,21 +530,28 @@ class SRM_Renderer {
       padding: 24px;
       box-sizing: border-box;
       box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03);
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .srm-ad-modal-ad-wrap {
       width: 100%;
+      min-width: 250px;
       margin: 0 auto;
-      text-align: left;
-      display: block;
-      overflow: hidden;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       min-height: 250px;
+      overflow: hidden;
       box-sizing: border-box;
     }
     .srm-ad-modal-ad-wrap ins.adsbygoogle {
       display: block !important;
-      width: 100% !important;
-      max-width: 100% !important;
       margin: 0 auto !important;
+      min-width: 250px !important;
+      min-height: 250px !important;
+      max-width: 100% !important;
       background: transparent !important;
     }
     .srm-ad-modal-footer {
@@ -732,13 +740,13 @@ class SRM_Renderer {
 </div>
 
 <?php if ( ! empty( trim( $ad_modal ) ) ) : ?>
-<!-- In-Feed / Fluid Modal Ad -->
+<!-- Full Screen Modal Ad -->
 <div id="srm-ad-modal" class="srm-ad-modal-overlay google-anno-skip" aria-modal="true" role="dialog" aria-hidden="true">
   <div class="srm-ad-modal-dialog">
     <div class="srm-ad-modal-header">
       <span class="srm-ad-modal-badge">
         <span class="srm-ad-modal-badge-dot"></span>
-        <?php esc_html_e( 'Sponsored Recommendation', 'safe-redirect-masker' ); ?>
+        <?php esc_html_e( 'Advertisement', 'safe-redirect-masker' ); ?>
       </span>
       <button type="button" class="srm-ad-modal-close" id="srm-modal-close-ad-btn" aria-label="<?php esc_attr_e( 'Close Ad', 'safe-redirect-masker' ); ?>">
         <span><?php esc_html_e( 'Close Ad', 'safe-redirect-masker' ); ?></span>
@@ -746,9 +754,9 @@ class SRM_Renderer {
       </button>
     </div>
     <div class="srm-ad-modal-body">
-      <div class="srm-infeed-card-box">
+      <div class="srm-ad-modal-card-box">
         <div class="srm-ad-modal-ad-wrap" id="srm-ad-modal-ad-wrap">
-          <!-- In-Feed Ad dynamically injected when modal opens -->
+          <?php echo $ad_modal; ?>
         </div>
       </div>
     </div>
@@ -761,10 +769,6 @@ class SRM_Renderer {
     </div>
   </div>
 </div>
-
-<template id="srm-modal-ad-template">
-  <?php echo $ad_modal; ?>
-</template>
 <?php endif; ?>
 
 <?php echo $ads_foot; ?>
@@ -928,57 +932,6 @@ class SRM_Renderer {
   var adModal          = document.getElementById('srm-ad-modal');
   var closeAdBtn       = document.getElementById('srm-modal-close-ad-btn');
   var modalContinueBtn = document.getElementById('srm-modal-continue-btn');
-  var modalAdLoaded    = false;
-
-  function loadModalAdContent() {
-    if (modalAdLoaded) return;
-    modalAdLoaded = true;
-
-    var tpl = document.getElementById('srm-modal-ad-template');
-    var wrap = document.getElementById('srm-ad-modal-ad-wrap');
-    if (!tpl || !wrap) return;
-
-    // Inject template HTML into the now-visible container
-    wrap.innerHTML = tpl.innerHTML;
-
-    // Ensure AdSense library is present
-    if (!window.adsbygoogle && !document.querySelector('script[src*="adsbygoogle.js"]')) {
-      var adScript = document.createElement('script');
-      adScript.async = true;
-      adScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
-      adScript.crossOrigin = 'anonymous';
-      document.head.appendChild(adScript);
-    }
-
-    // Execute any script tags inside the template (such as push or external script)
-    var scripts = Array.prototype.slice.call(wrap.getElementsByTagName('script'));
-    scripts.forEach(function (oldScript) {
-      var newScript = document.createElement('script');
-      Array.prototype.slice.call(oldScript.attributes).forEach(function (attr) {
-        newScript.setAttribute(attr.name, attr.value);
-      });
-      newScript.textContent = oldScript.textContent;
-      oldScript.parentNode.replaceChild(newScript, oldScript);
-    });
-
-    // For fluid in-feed ads, if ins.adsbygoogle is not yet pushed, call push({})
-    var insElements = wrap.querySelectorAll('ins.adsbygoogle');
-    insElements.forEach(function (ins) {
-      if (!ins.getAttribute('data-adsbygoogle-status')) {
-        try {
-          (window.adsbygoogle = window.adsbygoogle || []).push({});
-        } catch (err) {}
-      }
-    });
-
-    // Dispatch resize ticks so Google AdSense fluid layout engine measures visible container
-    setTimeout(function () {
-      try { window.dispatchEvent(new Event('resize')); } catch (e) {}
-    }, 50);
-    setTimeout(function () {
-      try { window.dispatchEvent(new Event('resize')); } catch (e) {}
-    }, 200);
-  }
 
   function closeAdModal() {
     if (!adModal) return;
@@ -1052,12 +1005,29 @@ class SRM_Renderer {
         if (finalNote)    finalNote.textContent    = 'Safe redirect verified. Thank you for your patience!';
       }
 
-      // If Modal Ad is present, pop up in-feed modal ad; otherwise scroll directly to bottom card
+      // If Modal Ad is present, pop up full screen modal ad; otherwise scroll directly to bottom card
       if (adModal) {
         adModal.classList.add('srm-modal-open');
         adModal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
-        loadModalAdContent();
+
+        // Check if any ins in the modal was not pushed yet (fallback push)
+        var modalIns = adModal.querySelectorAll('ins.adsbygoogle');
+        modalIns.forEach(function (ins) {
+          if (!ins.getAttribute('data-adsbygoogle-status')) {
+            try {
+              (window.adsbygoogle = window.adsbygoogle || []).push({});
+            } catch (err) {}
+          }
+        });
+
+        // Trigger resize events so AdSense re-measures container
+        setTimeout(function () {
+          try { window.dispatchEvent(new Event('resize')); } catch (err) {}
+        }, 50);
+        setTimeout(function () {
+          try { window.dispatchEvent(new Event('resize')); } catch (err) {}
+        }, 200);
       } else {
         scrollToFinalCard();
       }
