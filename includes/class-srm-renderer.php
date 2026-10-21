@@ -411,18 +411,18 @@ class SRM_Renderer {
       border-color: #f59e0b !important;
       box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25) !important;
     }
-    /* ─── In-Feed / Fluid Ad Modal Overlay ────────────────────────────── */
+    /* ─── In-Feed / Fluid Ad Fullscreen Modal Overlay ─────────────────── */
     .srm-ad-modal-overlay {
       position: fixed;
       inset: 0;
       z-index: 999999;
-      background: rgba(15, 23, 42, 0.78);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: 0;
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
@@ -434,50 +434,51 @@ class SRM_Renderer {
       pointer-events: auto;
     }
     .srm-ad-modal-dialog {
-      background: #ffffff;
-      border-radius: 18px;
-      width: 100%;
-      max-width: 480px;
-      max-height: 90vh;
+      background: #f8fafc;
+      border-radius: 0;
+      width: 100vw;
+      height: 100vh;
+      max-width: 100vw;
+      max-height: 100vh;
       overflow-y: auto;
       overflow-x: hidden;
-      box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.08);
+      box-shadow: none;
       display: flex;
       flex-direction: column;
       position: relative;
-      transform: scale(0.96) translateY(12px);
-      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: scale(0.98);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .srm-ad-modal-overlay.srm-modal-open .srm-ad-modal-dialog {
-      transform: scale(1) translateY(0);
+      transform: scale(1);
     }
     .srm-ad-modal-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 18px;
+      padding: 16px 24px;
       border-bottom: 1px solid var(--border);
-      background: #f8fafc;
-      border-top-left-radius: 18px;
-      border-top-right-radius: 18px;
+      background: #ffffff;
+      border-radius: 0;
       position: sticky;
       top: 0;
       z-index: 10;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
     .srm-ad-modal-badge {
-      font-size: 0.74rem;
+      font-size: 0.78rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: #64748b;
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
     }
     .srm-ad-modal-badge-dot {
       display: inline-block;
-      width: 8px;
-      height: 8px;
+      width: 9px;
+      height: 9px;
       background: #3b82f6;
       border-radius: 50%;
       box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
@@ -486,12 +487,12 @@ class SRM_Renderer {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 14px;
+      padding: 8px 18px;
       background: #f1f5f9;
-      color: #334155;
+      color: #1e293b;
       border: 1px solid #cbd5e1;
       border-radius: 9999px;
-      font-size: 0.82rem;
+      font-size: 0.88rem;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -507,24 +508,27 @@ class SRM_Renderer {
       transform: translateY(0);
     }
     .srm-ad-modal-body {
-      padding: 16px;
-      display: block;
-      min-height: 250px;
-      overflow-x: hidden;
-      background: #ffffff;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+      background: #f8fafc;
       box-sizing: border-box;
+      min-height: calc(100vh - 170px);
     }
-    /* Feed Card Container for Google In-Feed Ads */
+    /* Feed Card Container for Google In-Feed Ads (Expanded Fullscreen Width) */
     .srm-infeed-card-box {
       width: 100%;
-      max-width: 448px;
-      margin: 0 auto;
+      max-width: 820px;
+      margin: auto;
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 10px;
+      border-radius: 16px;
+      padding: 24px;
       box-sizing: border-box;
-      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+      box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03);
     }
     .srm-ad-modal-ad-wrap {
       width: 100%;
@@ -532,7 +536,7 @@ class SRM_Renderer {
       text-align: left;
       display: block;
       overflow: hidden;
-      min-height: 200px;
+      min-height: 250px;
       box-sizing: border-box;
     }
     .srm-ad-modal-ad-wrap ins.adsbygoogle {
@@ -543,25 +547,30 @@ class SRM_Renderer {
       background: transparent !important;
     }
     .srm-ad-modal-footer {
-      padding: 14px 18px 16px;
-      background: #f8fafc;
+      padding: 16px 24px;
+      background: #ffffff;
       border-top: 1px solid var(--border);
       text-align: center;
-      border-bottom-left-radius: 18px;
-      border-bottom-right-radius: 18px;
+      border-radius: 0;
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
+      width: 100%;
       display: flex;
       flex-direction: column;
       gap: 10px;
       align-items: center;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
     }
     .srm-btn-modal-continue {
       width: 100%;
-      padding: 12px 20px;
+      max-width: 500px;
+      padding: 14px 24px;
       background: linear-gradient(135deg, #2563eb, #1d4ed8);
       color: #ffffff;
       border: none;
       border-radius: 12px;
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 700;
       letter-spacing: 0.01em;
       cursor: pointer;
@@ -582,7 +591,7 @@ class SRM_Renderer {
       transform: translateY(0);
     }
     .srm-ad-modal-footer-note {
-      font-size: 0.76rem;
+      font-size: 0.8rem;
       color: var(--muted);
       line-height: 1.4;
     }
