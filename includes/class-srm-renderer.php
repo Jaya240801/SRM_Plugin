@@ -411,14 +411,14 @@ class SRM_Renderer {
       border-color: #f59e0b !important;
       box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25) !important;
     }
-    /* ─── Full Screen Ad Modal ────────────────────────────────────────── */
+    /* ─── Compact Ad Modal (Optimized for 300x250 / 336x280 Ads) ────── */
     .srm-ad-modal-overlay {
       position: fixed;
       inset: 0;
       z-index: 999999;
-      background: rgba(15, 23, 42, 0.82);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -426,7 +426,7 @@ class SRM_Renderer {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .srm-ad-modal-overlay.srm-modal-open {
       opacity: 1;
@@ -435,17 +435,17 @@ class SRM_Renderer {
     }
     .srm-ad-modal-dialog {
       background: #ffffff;
-      border-radius: 20px;
-      width: 100%;
-      max-width: 650px;
-      max-height: 90vh;
+      border-radius: 18px;
+      width: 92%;
+      max-width: 440px;
+      max-height: 88vh;
       overflow-y: auto;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
       display: flex;
       flex-direction: column;
       position: relative;
-      transform: scale(0.92) translateY(15px);
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: scale(0.92) translateY(12px);
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .srm-ad-modal-overlay.srm-modal-open .srm-ad-modal-dialog {
       transform: scale(1) translateY(0);
@@ -454,11 +454,11 @@ class SRM_Renderer {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 20px;
+      padding: 12px 18px;
       border-bottom: 1px solid var(--border);
       background: #f8fafc;
-      border-top-left-radius: 20px;
-      border-top-right-radius: 20px;
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
       position: sticky;
       top: 0;
       z-index: 10;
@@ -485,12 +485,12 @@ class SRM_Renderer {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 7px 14px;
+      padding: 6px 14px;
       background: #f1f5f9;
       color: #334155;
       border: 1px solid #cbd5e1;
       border-radius: 9999px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -506,17 +506,19 @@ class SRM_Renderer {
       transform: translateY(0);
     }
     .srm-ad-modal-body {
-      padding: 24px 20px;
+      padding: 18px 14px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 280px;
+      min-height: 270px;
       overflow-x: hidden;
+      background: #ffffff;
     }
     .srm-ad-modal-ad-wrap {
       width: 100%;
-      min-width: 280px;
+      max-width: 380px;
+      margin: 0 auto;
       text-align: center;
       display: flex;
       justify-content: center;
@@ -527,18 +529,19 @@ class SRM_Renderer {
       display: block !important;
       margin: 0 auto !important;
       min-width: 250px !important;
+      max-width: 100% !important;
       min-height: 250px !important;
     }
     .srm-ad-modal-footer {
-      padding: 12px 20px;
+      padding: 10px 16px;
       background: #f8fafc;
       border-top: 1px solid var(--border);
       text-align: center;
-      border-bottom-left-radius: 20px;
-      border-bottom-right-radius: 20px;
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
     }
     .srm-ad-modal-footer-note {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: var(--muted);
     }
     /* ─── Responsive ─────────────────────────────────────────────────── */
