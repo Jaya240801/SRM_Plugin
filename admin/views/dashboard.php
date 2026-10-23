@@ -291,44 +291,44 @@ $site_domain = wp_parse_url( home_url(), PHP_URL_HOST );
             <!-- 3 Ad Slots Grid -->
             <div class="srm-ad-slots-grid">
               
-              <!-- Ad Slot 1 -->
+              <!-- Ad Slot 1: In-Feed Ad -->
               <div class="srm-ad-slot-card">
                 <div class="srm-ad-slot-header">
-                  <span class="srm-badge srm-badge-primary">Slot 1</span>
-                  <strong><?php _e( 'Top Banner (Above Countdown)', 'safe-redirect-masker' ); ?></strong>
+                  <span class="srm-badge srm-badge-primary">Slot 1: In-Feed Ad</span>
+                  <strong><?php _e( 'Top Feed Card (Above Countdown)', 'safe-redirect-masker' ); ?></strong>
                 </div>
-                <textarea name="ad_slot_1" class="srm-textarea srm-textarea-code" rows="6" placeholder="<!-- Paste Ad Unit 1: <ins class=&quot;adsbygoogle&quot; ...></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->"><?php echo esc_textarea( $settings['ad_slot_1'] ?? '' ); ?></textarea>
-                <div class="srm-hint"><?php _e( 'Displayed at the very top of the safelink page, right above the countdown redirect card.', 'safe-redirect-masker' ); ?></div>
+                <textarea name="ad_slot_1" class="srm-textarea srm-textarea-code" rows="6" placeholder="<!-- Paste In-Feed Ad Unit: <ins class=&quot;adsbygoogle&quot; data-ad-format=&quot;fluid&quot; ...></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->"><?php echo esc_textarea( $settings['ad_slot_1'] ?? '' ); ?></textarea>
+                <div class="srm-hint"><?php _e( 'Optimized for In-Feed ads (fluid layout) or Display Banners. Rendered as a native feed card right above the countdown redirect card.', 'safe-redirect-masker' ); ?></div>
               </div>
 
-              <!-- Ad Slot 2 -->
+              <!-- Ad Slot 2: In-Article Ad -->
               <div class="srm-ad-slot-card">
                 <div class="srm-ad-slot-header">
-                  <span class="srm-badge srm-badge-primary">Slot 2</span>
-                  <strong><?php _e( 'Middle Banner (Between Countdown & Article)', 'safe-redirect-masker' ); ?></strong>
+                  <span class="srm-badge srm-badge-primary">Slot 2: In-Article Ad</span>
+                  <strong><?php _e( 'In-Article Ad (Inside Article Paragraphs)', 'safe-redirect-masker' ); ?></strong>
                 </div>
-                <textarea name="ad_slot_2" class="srm-textarea srm-textarea-code" rows="6" placeholder="<!-- Paste Ad Unit 2: <ins class=&quot;adsbygoogle&quot; ...></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->"><?php echo esc_textarea( $settings['ad_slot_2'] ?? '' ); ?></textarea>
-                <div class="srm-hint"><?php _e( 'Prime visibility position placed between the countdown redirect card and the cloaking article.', 'safe-redirect-masker' ); ?></div>
+                <textarea name="ad_slot_2" class="srm-textarea srm-textarea-code" rows="6" placeholder="<!-- Paste In-Article Ad Unit: <ins class=&quot;adsbygoogle&quot; data-ad-layout=&quot;in-article&quot; data-ad-format=&quot;fluid&quot; ...></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->"><?php echo esc_textarea( $settings['ad_slot_2'] ?? '' ); ?></textarea>
+                <div class="srm-hint"><?php _e( 'Optimized for In-Article Ads. Seamlessly inserted directly between article paragraphs with proper editorial spacing, compliant with Google AdSense In-Article policies.', 'safe-redirect-masker' ); ?></div>
               </div>
 
-              <!-- Ad Slot 3 -->
+              <!-- Ad Slot 3: Multiplex Ad -->
               <div class="srm-ad-slot-card">
                 <div class="srm-ad-slot-header">
-                  <span class="srm-badge srm-badge-primary">Slot 3</span>
-                  <strong><?php _e( 'Bottom Banner (Under Article Content)', 'safe-redirect-masker' ); ?></strong>
+                  <span class="srm-badge srm-badge-primary">Slot 3: Multiplex Ad</span>
+                  <strong><?php _e( 'Multiplex Grid (Under Article Content)', 'safe-redirect-masker' ); ?></strong>
                 </div>
-                <textarea name="ad_slot_3" class="srm-textarea srm-textarea-code" rows="6" placeholder="<!-- Paste Ad Unit 3: <ins class=&quot;adsbygoogle&quot; ...></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->"><?php echo esc_textarea( $settings['ad_slot_3'] ?? '' ); ?></textarea>
-                <div class="srm-hint"><?php _e( 'Displayed directly underneath the cloaking article content.', 'safe-redirect-masker' ); ?></div>
+                <textarea name="ad_slot_3" class="srm-textarea srm-textarea-code" rows="6" placeholder="<!-- Paste Multiplex Ad Unit: <ins class=&quot;adsbygoogle&quot; data-ad-format=&quot;autorelaxed&quot; ...></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->"><?php echo esc_textarea( $settings['ad_slot_3'] ?? '' ); ?></textarea>
+                <div class="srm-hint"><?php _e( 'Optimized for Multiplex Ads (autorelaxed grid) or Content Recommendations. Displayed as a &quot;You May Also Like&quot; content grid under the article content.', 'safe-redirect-masker' ); ?></div>
               </div>
 
-              <!-- Modal Ad Slot (In-Feed / Modal Card) -->
+              <!-- Popover Ad Slot (Display / Responsive Ad) -->
               <div class="srm-ad-slot-card">
                 <div class="srm-ad-slot-header">
-                  <span class="srm-badge srm-badge-primary"><?php _e( 'In-Feed / Modal Ad', 'safe-redirect-masker' ); ?></span>
-                  <strong><?php _e( 'Modal Ad (Triggered on Continue to Destination)', 'safe-redirect-masker' ); ?></strong>
+                  <span class="srm-badge srm-badge-primary">Popover: Display Ad</span>
+                  <strong><?php _e( 'Popover Ad (Triggered on Continue to Destination)', 'safe-redirect-masker' ); ?></strong>
                 </div>
-                <textarea name="ad_modal" class="srm-textarea srm-textarea-code" rows="6" placeholder="<!-- Paste In-Feed Ad Unit or Display Ad: <ins class=&quot;adsbygoogle&quot; data-ad-format=&quot;fluid&quot; ...></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->"><?php echo esc_textarea( $settings['ad_modal'] ?? '' ); ?></textarea>
-                <div class="srm-hint"><?php _e( 'Optimized for In-Feed (fluid format) or Display Ads. Displays as a branded feed-card modal with &quot;Close Ad&quot; and &quot;Continue to Destination&quot; buttons when the first button is clicked.', 'safe-redirect-masker' ); ?></div>
+                <textarea name="ad_modal" class="srm-textarea srm-textarea-code" rows="6" placeholder="<!-- Paste Display Ad Unit: <ins class=&quot;adsbygoogle&quot; data-ad-format=&quot;auto&quot; ...></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->"><?php echo esc_textarea( $settings['ad_modal'] ?? '' ); ?></textarea>
+                <div class="srm-hint"><?php _e( 'Optimized for Display Ads (auto / rectangle) or In-Feed Ads. Pre-rendered offscreen in the background so it loads instantly when the user clicks Continue to Destination.', 'safe-redirect-masker' ); ?></div>
               </div>
 
             </div>

@@ -149,7 +149,7 @@ class SRM_DB {
             'ad_slot_1'          => '',         // Ad Slot 1 (Top Banner - Above Article)
             'ad_slot_2'          => '',         // Ad Slot 2 (Middle Banner - Between Article & Countdown)
             'ad_slot_3'          => '',         // Ad Slot 3 (Bottom Banner - Under Countdown Card)
-            'ad_modal'           => '',         // Modal Ad (Full Screen Overlay on Continue to Destination)
+            'ad_modal'           => '',         // Popover Ad (Centered Floating Card on Continue to Destination)
             'ads_head'           => '',         // custom HTML injected into <head> of safelink page
             'ads_foot'           => '',         // custom HTML injected into </body> of safelink page
         );

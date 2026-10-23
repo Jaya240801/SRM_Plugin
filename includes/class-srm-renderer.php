@@ -44,6 +44,12 @@ class SRM_Renderer {
   <meta name="robots" content="noindex, follow">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+  <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
+  <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossorigin>
+  <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net">
+  <link rel="preconnect" href="https://tpc.googlesyndication.com" crossorigin>
+  <link rel="dns-prefetch" href="https://tpc.googlesyndication.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <?php echo $ads_head; ?>
   <style>
@@ -259,6 +265,13 @@ class SRM_Renderer {
       transition: width 1s linear;
     }
     /* ─── CTA Button ─────────────────────────────────────────────────── */
+    .srm-btn-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 8px 0 20px;
+      width: 100%;
+    }
     .srm-btn {
       display: block;
       width: 100%;
@@ -277,6 +290,16 @@ class SRM_Renderer {
       position: relative;
       overflow: hidden;
     }
+    #srm-btn,
+    .srm-btn.srm-btn-compact {
+      width: auto !important;
+      max-width: 100% !important;
+      padding: 13px 26px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 0 auto !important;
+    }
     .srm-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 12px 25px -4px rgba(37,99,235,.55);
@@ -293,6 +316,7 @@ class SRM_Renderer {
       align-items: center;
       justify-content: center;
       gap: 10px;
+      white-space: nowrap;
     }
     .srm-btn-arrow { font-size: 1.1rem; }
     /* ─── Security note ─────────────────────────────────────────────── */
@@ -308,43 +332,165 @@ class SRM_Renderer {
     }
     .srm-security-note .icon { font-size: 14px; flex-shrink: 0; }
     .srm-security-note span  { font-size: .78rem; color: #065f46; font-weight: 600; }
-    /* ─── AdSense Ad Slots ───────────────────────────────────────────── */
+    /* ─── AdSense Ad Slots (Tailored for In-Feed, In-Article, & Multiplex) ─── */
     .srm-ad-wrapper {
       margin: 18px 0;
       text-align: center;
-      background: #f8fafc;
-      border: 1px dashed #cbd5e1;
-      border-radius: 14px;
-      padding: 14px 10px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 50px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 12px;
+      overflow: visible;
+      box-sizing: border-box;
+      width: 100%;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+      transition: all 0.2s ease;
+      display: block;
     }
     .srm-ad-label {
+      display: inline-block;
       font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #64748b;
-      margin-bottom: 6px;
+      color: #94a3b8;
+      margin-bottom: 8px;
       user-select: none;
-      font-weight: 600;
+      font-weight: 700;
     }
     .srm-ad-content {
       width: 100%;
-      min-width: 250px;
       margin: 0 auto;
       text-align: center;
-      overflow-x: auto;
+      overflow: visible;
+      box-sizing: border-box;
     }
     .srm-ad-content ins.adsbygoogle {
       display: block !important;
       width: 100% !important;
-      min-width: 250px !important;
-      min-height: 90px !important;
-      margin: 0 auto !important;
+      margin: 0 auto;
+      background: transparent;
+    }
+
+    /* Slot 1: In-Feed Ad (Card Feed Layout) */
+    .srm-ad-slot-1 {
+      margin: 14px 0 18px !important;
+    }
+    .srm-ad-slot-1 .srm-ad-content {
+      min-height: 100px;
+    }
+    .srm-ad-slot-1 ins.adsbygoogle {
+      min-width: 250px;
+    }
+
+    /* Slot 2: In-Article Ad (Inside Article Content, Flowing with Paragraphs) */
+    .srm-ad-slot-2 {
+      background: transparent !important;
+      border: none !important;
+      border-top: 1px dashed var(--border) !important;
+      border-bottom: 1px dashed var(--border) !important;
+      border-radius: 0 !important;
+      padding: 18px 0 !important;
+      margin: 22px 0 !important;
+      box-shadow: none !important;
+    }
+    .srm-ad-slot-2 .srm-ad-content {
+      min-height: 120px;
+    }
+
+    /* Slot 3: Multiplex Ad (Content Recommendation Grid) */
+    .srm-ad-slot-3 {
+      text-align: left;
+      padding: 18px 16px 20px;
+      margin: 24px 0;
+      min-height: 280px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+      overflow: visible;
+      box-sizing: border-box;
+    }
+    .srm-ad-header-multiplex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .srm-ad-multiplex-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .srm-ad-slot-3 .srm-ad-content {
+      width: 100%;
+      min-height: 240px;
+      position: relative;
+    }
+
+    /* Multiplex Skeleton / Placeholder Grid */
+    .srm-multiplex-skeleton {
+      width: 100%;
+      margin: 4px 0 10px;
+      transition: opacity 0.3s ease;
+    }
+    .srm-mx-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (min-width: 640px) {
+      .srm-mx-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+      }
+    }
+    .srm-mx-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .srm-mx-img {
+      width: 100%;
+      height: 90px;
+      background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+      background-size: 200% 100%;
+      animation: srmShimmer 1.8s infinite;
+      border-radius: 8px;
+    }
+    .srm-mx-text1 {
+      width: 85%;
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 4px;
+    }
+    .srm-mx-text2 {
+      width: 60%;
+      height: 10px;
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    @keyframes srmShimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .srm-admin-ad-status {
+      margin-top: 12px;
+      padding: 10px 14px;
+      font-size: 0.78rem;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      color: #92400e;
+      line-height: 1.5;
     }
     /* ─── Scroll Lock & Final Card ────────────────────────────────────── */
     html.srm-scroll-locked,
@@ -390,7 +536,8 @@ class SRM_Renderer {
       display: none;
       align-items: center;
       gap: 10px;
-      margin-top: 14px;
+      margin-top: 0;
+      margin-bottom: 16px;
       padding: 11px 16px;
       background: #fef3c7;
       border: 1px solid #fde68a;
@@ -411,137 +558,222 @@ class SRM_Renderer {
       border-color: #f59e0b !important;
       box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25) !important;
     }
-    /* ─── In-Feed / Fluid Ad Fullscreen Modal Overlay ─────────────────── */
-    .srm-ad-modal-overlay {
+    /* ─── Centered Floating Popover Ad (HTML5 Popover API / Non-Fixation) ─── */
+    .srm-ad-popover {
+      /* Reset UA default popover styles */
+      border: none;
+      padding: 0;
+      background: transparent;
+      color: inherit;
+      position: fixed;
+      inset: unset;
+      top: 50%;
+      left: 50%;
+      right: auto;
+      bottom: auto;
+      margin: 0;
+      width: min(92vw, 540px);
+      max-width: 540px;
+      height: fit-content;
+      max-height: 88vh;
+      overflow: visible;
+      box-sizing: border-box;
+      z-index: 2147483647;
+      opacity: 0;
+      transform: translate(-50%, -46%) scale(0.96);
+      transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), overlay 0.22s allow-discrete, display 0.22s allow-discrete;
+    }
+
+    /* Closed / Pre-render state: kept in layout offscreen with concrete dimensions so AdSense can pre-render without unfilled collapse */
+    .srm-ad-popover:not(:popover-open):not(.srm-popover-open) {
+      display: flex !important;
+      position: fixed !important;
+      top: -9999px !important;
+      left: -9999px !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      opacity: 0 !important;
+      z-index: -1 !important;
+    }
+
+    /* Native HTML5 Popover Open State */
+    .srm-ad-popover:popover-open,
+    .srm-ad-popover.srm-popover-open {
+      inset: unset !important;
+      top: 50% !important;
+      left: 50% !important;
+      right: auto !important;
+      bottom: auto !important;
+      margin: 0 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      transform: translate(-50%, -50%) scale(1) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      opacity: 1 !important;
+      z-index: 2147483647 !important;
+    }
+
+    @starting-style {
+      .srm-ad-popover:popover-open {
+        opacity: 0;
+        transform: translate(-50%, -46%) scale(0.96) !important;
+      }
+    }
+
+    /* Light, non-intrusive backdrop with native light-dismiss */
+    .srm-ad-popover::backdrop {
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity 0.22s ease, overlay 0.22s allow-discrete, display 0.22s allow-discrete;
+    }
+
+    .srm-ad-popover:popover-open::backdrop {
+      opacity: 1;
+    }
+
+    @starting-style {
+      .srm-ad-popover:popover-open::backdrop {
+        opacity: 0;
+      }
+    }
+
+    /* Fallback backdrop for older browsers lacking ::backdrop */
+    .srm-popover-backdrop-fallback {
       position: fixed;
       inset: 0;
-      z-index: 999999;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .srm-ad-modal-overlay.srm-modal-open {
+      z-index: 2147483646;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
       opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
+      transition: opacity 0.2s ease;
     }
-    .srm-ad-modal-dialog {
-      background: #f8fafc;
-      border-radius: 0;
-      width: 100vw;
-      height: 100vh;
-      max-width: 100vw;
-      max-height: 100vh;
-      overflow-y: auto;
-      overflow-x: hidden;
-      box-shadow: none;
+
+    /* Popover Card Surface */
+    .srm-ad-popover-card {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      position: relative;
-      transform: scale(0.98);
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-sizing: border-box;
     }
-    .srm-ad-modal-overlay.srm-modal-open .srm-ad-modal-dialog {
-      transform: scale(1);
-    }
-    .srm-ad-modal-header {
+
+    /* Popover Header */
+    .srm-ad-popover-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 24px;
-      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
       background: #ffffff;
-      border-radius: 0;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      border-bottom: 1px solid var(--border);
     }
-    .srm-ad-modal-badge {
+
+    .srm-ad-popover-badge {
       font-size: 0.78rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.07em;
       color: #64748b;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .srm-ad-modal-badge-dot {
+
+    .srm-ad-popover-badge-dot {
       display: inline-block;
-      width: 9px;
-      height: 9px;
+      width: 8px;
+      height: 8px;
       background: #3b82f6;
       border-radius: 50%;
       box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
     }
-    .srm-ad-modal-close {
+
+    /* Close Button (Primary action in Popover) */
+    .srm-ad-popover-close {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 18px;
+      padding: 7px 16px;
       background: #f1f5f9;
       color: #1e293b;
       border: 1px solid #cbd5e1;
       border-radius: 9999px;
-      font-size: 0.88rem;
+      font-size: 0.84rem;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s ease;
       font-family: inherit;
     }
-    .srm-ad-modal-close:hover {
+
+    .srm-ad-popover-close:hover {
       background: #e2e8f0;
       color: #0f172a;
       border-color: #94a3b8;
       transform: translateY(-1px);
     }
-    .srm-ad-modal-close:active {
+
+    .srm-ad-popover-close:active {
       transform: translateY(0);
     }
-    .srm-ad-modal-body {
-      flex: 1;
+
+    /* Popover Body & Ad Content */
+    .srm-ad-popover-body {
+      padding: 20px 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 32px 20px;
       background: #f8fafc;
       box-sizing: border-box;
-      min-height: calc(100vh - 170px);
+      max-height: calc(88vh - 120px);
+      overflow-y: auto;
+      overflow-x: hidden;
     }
-    /* Card Container for Modal Ads (Fullscreen Display / In-Feed / Banner) */
-    .srm-infeed-card-box,
-    .srm-ad-modal-card-box {
-      width: 100%;
-      max-width: 820px;
-      margin: auto;
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 24px;
-      box-sizing: border-box;
-      box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03);
-      display: block;
-    }
-    .srm-ad-modal-ad-wrap {
+
+    .srm-ad-popover-ad-wrap {
       width: 100%;
       min-width: 250px;
+      min-height: 250px;
       margin: 0 auto;
       text-align: center;
       display: block;
-      min-height: 250px;
       box-sizing: border-box;
+      position: relative;
     }
-    .srm-ad-modal-ad-wrap ins.adsbygoogle {
+
+    .srm-ad-popover-skeleton {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 200% 100%;
+      animation: srm-shimmer 1.5s infinite;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #94a3b8;
+      font-size: 0.8rem;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes srm-shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .srm-ad-popover-ad-wrap ins.adsbygoogle {
       display: block !important;
       width: 100% !important;
       margin: 0 auto !important;
@@ -549,54 +781,17 @@ class SRM_Renderer {
       min-height: 250px !important;
       max-width: 100% !important;
       background: transparent !important;
+      position: relative;
+      z-index: 2;
     }
-    .srm-ad-modal-footer {
-      padding: 16px 24px;
+
+    .srm-ad-popover-footer-hint {
+      padding: 10px 18px 12px;
       background: #ffffff;
       border-top: 1px solid var(--border);
-      text-align: center;
-      border-radius: 0;
-      position: sticky;
-      bottom: 0;
-      z-index: 10;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items: center;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
-    }
-    .srm-btn-modal-continue {
-      width: 100%;
-      max-width: 500px;
-      padding: 14px 24px;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      color: #ffffff;
-      border: none;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-      transition: all 0.2s ease;
-      font-family: inherit;
-    }
-    .srm-btn-modal-continue:hover {
-      background: linear-gradient(135deg, #1d4ed8, #1e40af);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
-    }
-    .srm-btn-modal-continue:active {
-      transform: translateY(0);
-    }
-    .srm-ad-modal-footer-note {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--muted);
+      text-align: center;
       line-height: 1.4;
     }
     /* ─── Responsive ─────────────────────────────────────────────────── */
@@ -604,6 +799,10 @@ class SRM_Renderer {
       .srm-article-img, .srm-article-img-placeholder { height: 160px; }
       .srm-article-title { font-size: 1.2rem; }
       .srm-countdown { font-size: 2.2rem; }
+      .srm-ad-popover {
+        width: calc(100vw - 28px) !important;
+        max-width: calc(100vw - 28px) !important;
+      }
     }
   </style>
 </head>
@@ -616,15 +815,15 @@ class SRM_Renderer {
     <span class="site-name"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></span>
   </div>
 
-  <!-- Ad Slot 1 (Top Banner - Above Countdown) -->
+  <!-- Ad Slot 1: In-Feed Ad (Card Feed Layout above Countdown) -->
   <?php if ( ! empty( trim( $ad_slot_1 ) ) ) : ?>
-    <div class="srm-ad-wrapper srm-ad-slot-1">
+    <div class="srm-ad-wrapper srm-ad-slot-1 srm-ad-infeed">
       <span class="srm-ad-label"><?php esc_html_e( 'Advertisement', 'safe-redirect-masker' ); ?></span>
       <div class="srm-ad-content"><?php echo $ad_slot_1; ?></div>
     </div>
   <?php endif; ?>
 
-  <!-- Destination / Timer card (At top so user sees countdown immediately) -->
+  <!-- Destination / Timer card -->
   <div class="srm-dest-card" id="destination-card">
     <div class="srm-dest-header">
       <div class="srm-dest-icon">⚡</div>
@@ -634,7 +833,23 @@ class SRM_Renderer {
       </div>
     </div>
 
-    <!-- Timer -->
+    <!-- CTA button (Step 1: Swapped above countdown, sized to fit text) -->
+    <div class="srm-btn-wrap">
+      <button type="button" class="srm-btn srm-btn-compact disabled" id="srm-btn" disabled>
+        <span class="srm-btn-inner">
+          <span id="srm-btn-text">Continue to Destination</span>
+          <span class="srm-btn-arrow" id="srm-btn-icon">↓</span>
+        </span>
+      </button>
+    </div>
+
+    <!-- Back lock alert notice -->
+    <div class="srm-back-notice" id="srm-back-notice">
+      <span class="icon">⏳</span>
+      <span id="srm-back-notice-text"><?php esc_html_e( 'Please wait for the countdown to complete to unlock your destination link!', 'safe-redirect-masker' ); ?></span>
+    </div>
+
+    <!-- Timer (Countdown section swapped below the first button) -->
     <div class="srm-timer-wrap">
       <div class="srm-timer-info">
         <div class="srm-timer-label">Redirecting in</div>
@@ -651,20 +866,6 @@ class SRM_Renderer {
       <div class="srm-progress-bar" id="srm-progress"></div>
     </div>
 
-    <!-- Back lock alert notice -->
-    <div class="srm-back-notice" id="srm-back-notice">
-      <span class="icon">⏳</span>
-      <span id="srm-back-notice-text"><?php esc_html_e( 'Please wait for the countdown to complete to unlock your destination link!', 'safe-redirect-masker' ); ?></span>
-    </div>
-
-    <!-- CTA button (Step 1: scrolls down to bottom final link when countdown ends) -->
-    <button type="button" class="srm-btn disabled" id="srm-btn" disabled>
-      <span class="srm-btn-inner">
-        <span id="srm-btn-text">Continue to Destination</span>
-        <span class="srm-btn-arrow" id="srm-btn-icon">↓</span>
-      </span>
-    </button>
-
     <!-- Security note -->
     <div class="srm-security-note">
       <span class="icon">🔒</span>
@@ -672,15 +873,7 @@ class SRM_Renderer {
     </div>
   </div>
 
-  <!-- Ad Slot 2 (Middle Banner - Between Countdown & Article) -->
-  <?php if ( ! empty( trim( $ad_slot_2 ) ) ) : ?>
-    <div class="srm-ad-wrapper srm-ad-slot-2">
-      <span class="srm-ad-label"><?php esc_html_e( 'Advertisement', 'safe-redirect-masker' ); ?></span>
-      <div class="srm-ad-content"><?php echo $ad_slot_2; ?></div>
-    </div>
-  <?php endif; ?>
-
-  <!-- Article cloaking content (Placed under countdown section) -->
+  <!-- Article cloaking content (Placed under countdown section with In-Article Ad Slot 2) -->
   <div class="srm-article-card">
     <?php if ( $image ) : ?>
       <img class="srm-article-img" src="<?php echo $image; ?>" alt="<?php echo $title; ?>" loading="eager">
@@ -690,21 +883,62 @@ class SRM_Renderer {
     <div class="srm-article-body">
       <span class="srm-article-tag">📰 Article</span>
       <h1 class="srm-article-title"><?php echo $title; ?></h1>
-      <?php if ( $content ) : ?>
-        <div class="srm-article-content"><?php echo $content; ?></div>
-      <?php else : ?>
-        <div class="srm-article-content">
-          <p>Please wait while we verify your connection and prepare your secure redirect to the destination link. This process ensures your safety and prevents automated bot access.</p>
-        </div>
-      <?php endif; ?>
+
+      <?php
+      $has_ad_2    = ! empty( trim( $ad_slot_2 ) );
+      $slot_2_html = '';
+      if ( $has_ad_2 ) {
+          $slot_2_html = '<div class="srm-ad-wrapper srm-ad-slot-2 srm-ad-inarticle">'
+                       . '<span class="srm-ad-label">' . esc_html__( 'Advertisement', 'safe-redirect-masker' ) . '</span>'
+                       . '<div class="srm-ad-content">' . $ad_slot_2 . '</div>'
+                       . '</div>';
+      }
+
+      $raw_article = $content;
+      if ( empty( $raw_article ) ) {
+          $raw_article = '<p>' . esc_html__( 'Please wait while we verify your connection and prepare your secure redirect to the destination link. This process ensures your safety and prevents automated bot access.', 'safe-redirect-masker' ) . '</p>'
+                       . '<p>' . esc_html__( 'Our security gateway monitors traffic patterns and protects destination URLs from automated scraping and spam bots. Thank you for your patience.', 'safe-redirect-masker' ) . '</p>';
+      }
+
+      if ( $has_ad_2 && stripos( $raw_article, '</p>' ) !== false ) {
+          $p_parts   = explode( '</p>', $raw_article );
+          $p_count   = count( $p_parts );
+          $split_pos = ( $p_count > 2 ) ? (int) floor( $p_count / 2 ) : 1;
+          $split_pos = max( 1, min( $split_pos, $p_count - 1 ) );
+
+          $before_ad = implode( '</p>', array_slice( $p_parts, 0, $split_pos ) ) . '</p>';
+          $after_ad  = implode( '</p>', array_slice( $p_parts, $split_pos ) );
+          echo '<div class="srm-article-content">' . $before_ad . $slot_2_html . $after_ad . '</div>';
+      } else {
+          echo '<div class="srm-article-content">' . $raw_article . ( $has_ad_2 ? $slot_2_html : '' ) . '</div>';
+      }
+      ?>
     </div>
   </div>
 
-  <!-- Ad Slot 3 (Bottom Banner - Under Article Content) -->
+  <!-- Ad Slot 3: Multiplex Ad (Content Recommendation Grid under Article) -->
   <?php if ( ! empty( trim( $ad_slot_3 ) ) ) : ?>
-    <div class="srm-ad-wrapper srm-ad-slot-3">
-      <span class="srm-ad-label"><?php esc_html_e( 'Advertisement', 'safe-redirect-masker' ); ?></span>
-      <div class="srm-ad-content"><?php echo $ad_slot_3; ?></div>
+    <div class="srm-ad-wrapper srm-ad-slot-3 srm-ad-multiplex" id="srm-multiplex-slot">
+      <div class="srm-ad-header-multiplex">
+        <span class="srm-ad-multiplex-title">💡 <?php esc_html_e( 'You May Also Like', 'safe-redirect-masker' ); ?></span>
+        <span class="srm-ad-label"><?php esc_html_e( 'Sponsored Content', 'safe-redirect-masker' ); ?></span>
+      </div>
+      <div class="srm-ad-content srm-ad-content-multiplex">
+        <div class="srm-multiplex-skeleton" id="srm-multiplex-skeleton">
+          <div class="srm-mx-grid">
+            <div class="srm-mx-card"><div class="srm-mx-img"></div><div class="srm-mx-text1"></div><div class="srm-mx-text2"></div></div>
+            <div class="srm-mx-card"><div class="srm-mx-img"></div><div class="srm-mx-text1"></div><div class="srm-mx-text2"></div></div>
+            <div class="srm-mx-card"><div class="srm-mx-img"></div><div class="srm-mx-text1"></div><div class="srm-mx-text2"></div></div>
+            <div class="srm-mx-card"><div class="srm-mx-img"></div><div class="srm-mx-text1"></div><div class="srm-mx-text2"></div></div>
+          </div>
+        </div>
+        <div class="srm-ad-actual-code">
+          <?php echo $ad_slot_3; ?>
+        </div>
+      </div>
+      <?php if ( current_user_can( 'manage_options' ) ) : ?>
+        <div class="srm-admin-ad-status" id="srm-admin-ad-status-3" style="display:none;"></div>
+      <?php endif; ?>
     </div>
   <?php endif; ?>
 
@@ -736,36 +970,33 @@ class SRM_Renderer {
 </div>
 
 <?php if ( ! empty( trim( $ad_modal ) ) ) : ?>
-<!-- Full Screen Modal Ad -->
-<div id="srm-ad-modal" class="srm-ad-modal-overlay google-anno-skip" aria-modal="true" role="dialog" aria-hidden="true">
-  <div class="srm-ad-modal-dialog">
-    <div class="srm-ad-modal-header">
-      <span class="srm-ad-modal-badge">
-        <span class="srm-ad-modal-badge-dot"></span>
-        <?php esc_html_e( 'Advertisement', 'safe-redirect-masker' ); ?>
+<!-- Centered Floating Popover Ad (HTML5 Popover API with Light Dismiss) -->
+<div id="srm-ad-popover" class="srm-ad-popover google-anno-skip" popover="auto" role="dialog" aria-label="<?php esc_attr_e( 'Advertisement', 'safe-redirect-masker' ); ?>">
+  <div class="srm-ad-popover-card">
+    <div class="srm-ad-popover-header">
+      <span class="srm-ad-popover-badge">
+        <span class="srm-ad-popover-badge-dot"></span>
+        <?php esc_html_e( 'Sponsored / Advertisement', 'safe-redirect-masker' ); ?>
       </span>
-      <button type="button" class="srm-ad-modal-close" id="srm-modal-close-ad-btn" aria-label="<?php esc_attr_e( 'Close Ad', 'safe-redirect-masker' ); ?>">
-        <span><?php esc_html_e( 'Close Ad', 'safe-redirect-masker' ); ?></span>
+      <button type="button" class="srm-ad-popover-close" id="srm-popover-close-btn" aria-label="<?php esc_attr_e( 'Close & Continue', 'safe-redirect-masker' ); ?>">
+        <span><?php esc_html_e( 'Close', 'safe-redirect-masker' ); ?></span>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
     </div>
-    <div class="srm-ad-modal-body">
-      <div class="srm-ad-modal-card-box">
-        <div class="srm-ad-modal-ad-wrap" id="srm-ad-modal-ad-wrap">
-          <!-- Dynamically populated when modal opens so AdSense is never initialized while hidden -->
+    <div class="srm-ad-popover-body">
+      <div class="srm-ad-popover-ad-wrap" id="srm-ad-popover-ad-wrap">
+        <div class="srm-ad-popover-skeleton" id="srm-ad-popover-skeleton">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <span><?php esc_html_e( 'Advertisement Loading...', 'safe-redirect-masker' ); ?></span>
         </div>
       </div>
     </div>
-    <div class="srm-ad-modal-footer">
-      <button type="button" class="srm-btn-modal-continue" id="srm-modal-continue-btn">
-        <span><?php esc_html_e( 'Continue to Destination', 'safe-redirect-masker' ); ?></span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
-      </button>
-      <span class="srm-ad-modal-footer-note"><?php esc_html_e( 'Click above or close to proceed to your verified link', 'safe-redirect-masker' ); ?></span>
+    <div class="srm-ad-popover-footer-hint">
+      <?php esc_html_e( 'Close this window to proceed to your verified destination link', 'safe-redirect-masker' ); ?>
     </div>
   </div>
 </div>
-<template id="srm-modal-ad-raw">
+<template id="srm-popover-ad-raw">
   <?php echo $ad_modal; ?>
 </template>
 <?php endif; ?>
@@ -907,7 +1138,7 @@ class SRM_Renderer {
         btn.removeAttribute('aria-disabled');
       }
       var timerDesc = document.querySelector('.srm-timer-desc');
-      if (timerDesc) timerDesc.textContent = 'Verification complete! Click the button below to continue.';
+      if (timerDesc) timerDesc.textContent = 'Verification complete! Click the button above to continue.';
     }
   }
 
@@ -927,20 +1158,23 @@ class SRM_Renderer {
     }
   }
 
-  // Modal handlers
-  var adModal          = document.getElementById('srm-ad-modal');
-  var closeAdBtn       = document.getElementById('srm-modal-close-ad-btn');
-  var modalContinueBtn = document.getElementById('srm-modal-continue-btn');
-  var modalAdActivated = false;
+  // Popover handlers (HTML5 Popover API with Light Dismiss & Fallback)
+  var adPopover          = document.getElementById('srm-ad-popover');
+  var closePopoverBtn    = document.getElementById('srm-popover-close-btn');
+  var popoverAdActivated = false;
+  var fallbackBackdrop   = null;
+  var hasNativePopover   = !!(adPopover && typeof adPopover.showPopover === 'function');
+  var popoverWasOpen     = false;
 
-  function activateModalAd() {
-    if (modalAdActivated) return;
-    modalAdActivated = true;
+  function activatePopoverAd() {
+    if (popoverAdActivated) return;
+    popoverAdActivated = true;
 
-    var rawTpl = document.getElementById('srm-modal-ad-raw');
-    var wrap   = document.getElementById('srm-ad-modal-ad-wrap');
+    var rawTpl = document.getElementById('srm-popover-ad-raw');
+    var wrap   = document.getElementById('srm-ad-popover-ad-wrap');
     if (!rawTpl || !wrap) return;
 
+    var skel = document.getElementById('srm-ad-popover-skeleton');
     var tempDiv = document.createElement('div');
     tempDiv.innerHTML = rawTpl.innerHTML;
 
@@ -960,7 +1194,8 @@ class SRM_Renderer {
         s.remove();
       });
 
-      // Insert clean markup into visible wrap
+      // Clear skeleton and insert clean markup into wrap
+      if (skel) skel.remove();
       wrap.innerHTML = tempDiv.innerHTML;
 
       // Push to AdSense for each ins tag
@@ -969,11 +1204,12 @@ class SRM_Renderer {
         try {
           (window.adsbygoogle = window.adsbygoogle || []).push({});
         } catch (err) {
-          console.warn('SRM AdSense modal push:', err);
+          console.warn('SRM AdSense popover push:', err);
         }
       });
     } else {
       // Non-AdSense / generic ad code
+      if (skel) skel.remove();
       wrap.innerHTML = '';
       Array.from(tempDiv.childNodes).forEach(function (node) {
         if (node.tagName === 'SCRIPT') {
@@ -998,57 +1234,109 @@ class SRM_Renderer {
     }, 250);
   }
 
-  function scrollToFinalCard() {
-    var finalCard = document.getElementById('srm-final-card');
-    if (finalCard) {
-      finalCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      finalCard.classList.add('srm-card-highlight');
-      setTimeout(function () {
-        finalCard.classList.remove('srm-card-highlight');
-      }, 2500);
+  // Pre-render the popover ad offscreen in the background so it's loaded before user opens popover
+  if (adPopover) {
+    setTimeout(activatePopoverAd, 150);
+  }
+
+  function showFallbackBackdrop() {
+    if (!fallbackBackdrop) {
+      fallbackBackdrop = document.createElement('div');
+      fallbackBackdrop.className = 'srm-popover-backdrop-fallback';
+      fallbackBackdrop.addEventListener('click', function () {
+        closePopover();
+      });
+      document.body.appendChild(fallbackBackdrop);
+    }
+    fallbackBackdrop.style.display = 'block';
+  }
+
+  function hideFallbackBackdrop() {
+    if (fallbackBackdrop) {
+      fallbackBackdrop.style.display = 'none';
     }
   }
 
-  function closeAdModal() {
-    if (!adModal) return;
-    adModal.classList.remove('srm-modal-open');
-    adModal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    // Scroll down to the final bottom destination card after closing modal
-    scrollToFinalCard();
+  function openPopover() {
+    if (!adPopover) {
+      scrollToFinalCard();
+      return;
+    }
+    popoverWasOpen = true;
+
+    // Ensure ad is activated if not already done
+    activatePopoverAd();
+
+    if (hasNativePopover) {
+      try {
+        adPopover.showPopover();
+      } catch (e) {
+        adPopover.classList.add('srm-popover-open');
+        showFallbackBackdrop();
+      }
+    } else {
+      adPopover.classList.add('srm-popover-open');
+      showFallbackBackdrop();
+    }
+
+    // Trigger responsive recalculation once visible
+    setTimeout(function () {
+      try { window.dispatchEvent(new Event('resize')); } catch (err) {}
+    }, 50);
   }
 
-  if (closeAdBtn) {
-    closeAdBtn.addEventListener('click', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      closeAdModal();
-    });
+  function closePopover() {
+    if (!adPopover) return;
+    var hadOpen = popoverWasOpen;
+    popoverWasOpen = false;
+
+    if (hasNativePopover) {
+      try {
+        adPopover.hidePopover();
+      } catch (e) {
+        adPopover.classList.remove('srm-popover-open');
+      }
+    } else {
+      adPopover.classList.remove('srm-popover-open');
+    }
+    hideFallbackBackdrop();
+
+    // When user closes the popover, trigger smooth scroll down to the final button
+    if (hadOpen) {
+      scrollToFinalCard();
+    }
   }
 
-  if (modalContinueBtn) {
-    modalContinueBtn.addEventListener('click', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      window.location.href = dest;
-    });
-  }
-
-  if (adModal) {
-    adModal.addEventListener('click', function (e) {
-      if (e.target === adModal) {
-        closeAdModal();
+  // Native HTML5 popover toggle listener (captures light-dismiss when user clicks outside or hits ESC)
+  if (adPopover) {
+    adPopover.addEventListener('toggle', function (e) {
+      if (e.newState === 'closed') {
+        if (popoverWasOpen) {
+          popoverWasOpen = false;
+          hideFallbackBackdrop();
+          scrollToFinalCard();
+        }
       }
     });
   }
 
+  // Close button listener
+  if (closePopoverBtn) {
+    closePopoverBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      closePopover();
+    });
+  }
+
+  // Fallback ESC listener for browsers where native popover toggle isn't available
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && adModal && adModal.classList.contains('srm-modal-open')) {
-      closeAdModal();
+    if (e.key === 'Escape' && popoverWasOpen) {
+      closePopover();
     }
   });
 
-  // 3. Step 1 Button Click: Show Modal Ad (if present) and scroll smoothly to final destination card
+  // 3. Step 1 Button Click: Show Popover Ad (if present) or scroll smoothly to final destination card
   if (btn) {
     btn.addEventListener('click', function (e) {
       e.preventDefault();
@@ -1081,18 +1369,67 @@ class SRM_Renderer {
         if (finalNote)    finalNote.textContent    = 'Safe redirect verified. Thank you for your patience!';
       }
 
-      // If Modal Ad is present, pop up full screen modal ad; otherwise scroll directly to bottom card
-      if (adModal) {
-        adModal.classList.add('srm-modal-open');
-        adModal.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-
-        activateModalAd();
+      // If Popover Ad is present, open non-fixation floating popover; otherwise scroll directly to bottom card
+      if (adPopover) {
+        openPopover();
       } else {
         scrollToFinalCard();
       }
     });
   }
+
+  // Trigger responsive reflow so AdSense calculates In-Feed, In-Article, and Multiplex grids accurately
+  [80, 250, 600, 1500].forEach(function (ms) {
+    setTimeout(function () {
+      try { window.dispatchEvent(new Event('resize')); } catch (e) {}
+    }, ms);
+  });
+
+  // Monitor AdSense status for Multiplex & ensure slots do not disappear
+  (function monitorAdSlots() {
+    // 1. Ensure any unpushed visible AdSense slots get pushed
+    document.querySelectorAll('.srm-ad-wrapper ins.adsbygoogle').forEach(function (ins) {
+      if (!ins.getAttribute('data-adsbygoogle-status')) {
+        try {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {}
+      }
+    });
+
+    // 2. Multiplex state tracking
+    var mxWrap = document.getElementById('srm-multiplex-slot');
+    if (!mxWrap) return;
+
+    var skel = document.getElementById('srm-multiplex-skeleton');
+    var adminBadge = document.getElementById('srm-admin-ad-status-3');
+    var ins = mxWrap.querySelector('ins.adsbygoogle');
+    if (!ins) return;
+
+    var checkCount = 0;
+    var interval = setInterval(function () {
+      checkCount++;
+      var status = ins.getAttribute('data-ad-status');
+      var iframe = ins.querySelector('iframe');
+      var iframeHeight = iframe ? (iframe.offsetHeight || parseInt(iframe.getAttribute('height') || '0', 10)) : 0;
+
+      if (status === 'filled' || (iframe && iframeHeight > 40)) {
+        // Real AdSense ad filled!
+        if (skel) skel.style.display = 'none';
+        if (adminBadge) adminBadge.style.display = 'none';
+        clearInterval(interval);
+      } else if (status === 'unfilled') {
+        // AdSense returned unfilled
+        if (adminBadge) {
+          var slotId = ins.getAttribute('data-ad-slot') || 'Multiplex';
+          adminBadge.innerHTML = '<strong>⚡ AdSense Status (Slot ' + slotId + '):</strong> Google AdSense queried the auction and returned <code>unfilled</code>. This is normal for new ad units during the 24–48h warm-up period. The container remains active.';
+          adminBadge.style.display = 'block';
+        }
+        clearInterval(interval);
+      } else if (checkCount >= 20) {
+        clearInterval(interval);
+      }
+    }, 500);
+  })();
 
   // 4. Step 2 Final Button Click: Redirect to destination (only if step 1 was completed)
   if (finalBtn) {
